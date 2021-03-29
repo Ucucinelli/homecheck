@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.guides.springboot</groupId>
-	<artifactId>registration-login-springboot-security-thymeleaf</artifactId>
+	<groupId>it.ecubit</groupId>
+	<artifactId>homecheck</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>registration-login-springboot-security-thymeleaf</name>
-	<description>Demo project for Spring Boot</description>
+	<name>homecheck</name>
+	<description>HomeCheck project</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
