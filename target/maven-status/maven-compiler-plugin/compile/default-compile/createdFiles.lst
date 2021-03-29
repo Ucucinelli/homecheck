@@ -1,0 +1,10 @@
+it\ecubit\homecheck\Application.class
+it\ecubit\homecheck\constraint\FieldMatchValidator.class
+it\ecubit\homecheck\constraint\FieldMatch.class
+it\ecubit\homecheck\web\MainController.class
+it\ecubit\homecheck\web\UserRegistrationController.class
+it\ecubit\homecheck\web\dto\UserRegistrationDto.class
+it\ecubit\homecheck\service\UserService.class
+it\ecubit\homecheck\config\SecurityConfiguration.class
+it\ecubit\homecheck\service\UserServiceImpl.class
+it\ecubit\homecheck\constraint\FieldMatch$List.class

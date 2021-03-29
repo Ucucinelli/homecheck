@@ -1,0 +1,15 @@
+
+	private id: string;
+	private motivoDelConsulto: string;
+	private consigli: string;
+	private medicoRichiedente: string;
+	private medicoCurante: string;
+	private conclusioni: string;
+	private trattamenti: string;
+	private notePaziente: string;
+	private ritornareAllaVisita: Date;
+	private orarioVisita: Date
+	private ripetereOgni: number;
+	private notifichePaziente: string;
+	private idPaziente: string;
+}
