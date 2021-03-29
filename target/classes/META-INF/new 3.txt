@@ -1,4 +1,0 @@
-
-	
-	private id: string;
-	private alimentazione: string;
