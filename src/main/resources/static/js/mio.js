@@ -1,3 +1,13 @@
+$(function() {
+	$("#datepicker").datepicker({
+		dateFormat: "dd/mm/yy",
+		onSelect: function(date) {
+			//defined your own method here
+		}
+	});
+	$("#datepicker").attr("autocomplete", "off");
+})
+
 function sendtoken() {
 	var _token = $('meta[name="_jwt"]').attr('content');
 
@@ -37,10 +47,10 @@ function sendtoken3() {
 		url: "http://localhost:9999/api/login",
 		type: 'post',
 		headers: {
-        'Authorization':'Basic xxxxxxxxxxxxx',
-        'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
-        'Content-Type':'application/json'
-    },
+			'Authorization': 'Basic xxxxxxxxxxxxx',
+			'X-CSRF-TOKEN': 'xxxxxxxxxxxxxxxxxxxx',
+			'Content-Type': 'application/json'
+		},
 		cache: false,
 		contentType: false,
 		processData: false,

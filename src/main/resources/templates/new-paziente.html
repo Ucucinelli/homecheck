@@ -15,6 +15,8 @@
 <!-- Custom fonts for this template -->
 <link rel="stylesheet" type="text/css"
 	th:href="@{/webjars/font-awesome/5.15.1/css/all.min.css}" />
+<link th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.css}"
+	rel="stylesheet" type="text/css">
 <link th:href="@{/css/ecubit-admin.css}" rel="stylesheet"
 	type="text/css">
 <link th:href="@{/css/ecubit-admin.min.css}" rel="stylesheet"
@@ -53,7 +55,7 @@
 					<!-- Breadcrumb -->
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="../dashboard.html">Dashboard</a></li>
+							<li class="breadcrumb-item"><a th:href="@{/{value}(value='dashboard')}">Dashboard</a></li>
 							<li class="breadcrumb-item active" aria-current="page">Nuovo
 								Paziente</li>
 						</ol>
@@ -128,10 +130,16 @@
 														role="progressbar" aria-valuenow="1" aria-valuemin="1"
 														aria-valuemax="5" style="width: 30%;">Step 1 of 3</div>
 												</div>
-												<form th:action="@{/pazients}" th:object="${patient}" method="post">
-													<div class="tab-content">
-														<!-- Begin step 1 anagrafica paziente -->
-														<div class="tab-pane active" id="AnagraficaPaziente">
+
+												<div class="tab-content">
+													<!-- Begin step 1 anagrafica paziente -->
+													<div class="tab-pane active" id="AnagraficaPaziente">
+														<form th:action="@{/patients}" th:object="${patient}"
+															method="post">
+															<p class="text-danger"
+																th:if="${#fields.hasGlobalErrors()}"
+																th:each="error : ${#fields.errors('global')}"
+																th:text="${error}">Validation error</p>
 															<div class="form-row">
 																<div class="form-group col-md-2">
 																	<div class="card-body text-center">
@@ -150,56 +158,75 @@
 																<div class="form-group col-md-4 mt-5">
 																	<label for="inputName">Nome</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text" id="inputName"
-																			placeholder="Inserisci Nome" aria-label="Nome">
+																		<input th:field="*{name}" class="form-control"
+																			type="text" id="inputName"
+																			placeholder="Inserisci Nome" aria-label="Nome"
+																			required>
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-user-tie"></i>
 																			</span>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('name')}"
+																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-4 mt-5">
 																	<label for="inputSurname">Cognome</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
-																			id="inputSurname" placeholder="Inserisci Cognome"
-																			aria-label="Cognome">
+																		<input th:field="*{surname}" class="form-control"
+																			type="text" id="surname"
+																			placeholder="Inserisci Cognome" aria-label="Cognome"
+																			required>
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-user-tie"></i>
 																			</span>
 																		</div>
+																		<p class="text-danger"
+																			th:each="error: ${#fields.errors('surname')}"
+																			th:text="${error}">Validation error</p>
 																	</div>
 																</div>
 																<div class="form-group col-md-2 mt-5">
 																	<label for="exampleFormControlTextarea1">Sesso</label><br>
 																	<div class="form-check form-check-inline">
 																		<div class="custom-control custom-radio">
-																			<input class="custom-control-input" id="customRadio1"
-																				type="radio" name="customRadio"> <label
+																			<input th:field="*{sex}" class="custom-control-input"
+																				id="customRadio1" type="radio" value="MALE"
+																				name="customRadio" required> <label
 																				class="custom-control-label" for="customRadio1">M</label>
 																		</div>
 																	</div>
 																	<div class="form-check form-check-inline">
 																		<div class="custom-control custom-radio">
-																			<input class="custom-control-input" id="customRadio2"
-																				type="radio" name="customRadio"> <label
+																			<input th:field="*{sex}" value="FEMALE"
+																				class="custom-control-input" id="customRadio2"
+																				type="radio" name="customRadio" required> <label
 																				class="custom-control-label" for="customRadio2">F</label>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('sex')}"
+																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-4">
 																	<label for="DOB">Data di nascita</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text" id="inputDOB"
-																			placeholder="formato gg / mm / aaaa" aria-label="DOB">
+																		<input th:field="*{birthDate}" class="form-control"
+																			type="text" id="datepicker"
+																			placeholder="formato gg / mm / aaaa" aria-label="DOB"
+																			required>
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="far fa-calendar-alt"></i>
 																			</span>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('birthDate')}"
+																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-4">
 																	<label for="LuogoDiNascita">Luogo Di Nascita</label>
@@ -259,30 +286,36 @@
 																</div>
 																<div class="form-group col-md-4">
 																	<label for="PatologiaPrincipale">Assistente
-																		Sanitario</label> <select id="PatologiaPrincipale"
+																		Sanitario</label>
+																	<!-- <select th:field="*{clinicianId}" 
+																		id="PatologiaPrincipale"
 																		class="form-control custom-select">
 																		<option selected>Seleziona...</option>
 																		<option>Roberto Rossi</option>
 																		<option>Alessandro Rossi</option>
-																	</select>
+																	</select> -->
 																</div>
 																<div class="form-group col-md-4">
 																	<label for="inputAltezza">Altezza</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
-																			id="inputAltezza" placeholder="Inserisci Altezza"
-																			aria-label="Altezza">
+																		<input th:field="*{height}" class="form-control"
+																			type="number" id="inputAltezza" step="0.1"
+																			placeholder="Inserisci Altezza" aria-label="Altezza">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-arrows-alt-v"></i>
 																			</span>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('height')}"
+																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-4">
 																	<label for="inputPeso">Peso</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text" id="inputPeso"
+																		<input th:field="*{weight}" class="form-control"
+																			type="number" id="inputPeso" step="0.1"
 																			placeholder="Inserisci Peso" aria-label="inputPeso">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
@@ -290,6 +323,9 @@
 																			</span>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('weight')}"
+																		th:text="${error}">Validation error</p>
 																</div>
 															</div>
 															<hr class="sidebar-divider d-none d-md-block">
@@ -297,1023 +333,1003 @@
 																<button type="reset"
 																	class="btn btn-primary btn-user text-uppercase">Reset</button>
 																<button type="submit"
-																	class="btn btn-primary btn-user text-uppercase nextTab">Salva
+																	class="btn btn-primary btn-user text-uppercase">Salva
 																	e continua</button>
 															</div>
-														</div>
-														<!-- End step 1 anagrafica paziente -->
-														<!-- Begin step 2 patologie paziente -->
-														<div class="tab-pane fade" id="PatologiePaziente">
-															<h6 class="m-0 font-weight-light ">Seleziona una o
-																più patologie</h6>
-															<hr class="sidebar-divider d-none d-md-block">
-															<div class="row">
-																<div class="col-2">
-																	<div class="list-group" id="list-tab" role="tablist">
-																		<a
-																			class="list-group-item list-group-item-action active"
-																			id="list-patologia-list" data-toggle="list"
-																			href="#list-patologia" role="tab"
-																			aria-controls="patologia">Testa e collo</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia1-list" data-toggle="list"
-																			href="#list-patologia1" role="tab"
-																			aria-controls="patologia1">Occhi</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia2-list" data-toggle="list"
-																			href="#list-patologia2" role="tab"
-																			aria-controls="patologia2">Torace e cuore</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia3-list" data-toggle="list"
-																			href="#list-patologia3" role="tab"
-																			aria-controls="patologia3">Spalla</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia4-list" data-toggle="list"
-																			href="#list-patologia4" role="tab"
-																			aria-controls="patologia4">Addome</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia5-list" data-toggle="list"
-																			href="#list-patologia5" role="tab"
-																			aria-controls="patologia5">Braccia e mani</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia6-list" data-toggle="list"
-																			href="#list-patologia6" role="tab"
-																			aria-controls="patologia6">Zona pelvica</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia7-list" data-toggle="list"
-																			href="#list-patologia7" role="tab"
-																			aria-controls="patologia7">Gambe</a> <a
-																			class="list-group-item list-group-item-action"
-																			id="list-patologia8-list" data-toggle="list"
-																			href="#list-patologia8" role="tab"
-																			aria-controls="patologia8">Piedi</a>
-																	</div>
-																</div>
-																<div class="col-10">
-																	<div class="tab-content" id="nav-tabContent">
-																		<!-- Patologia 1-->
-																		<div class="tab-pane fade show active"
-																			id="list-patologia" role="tabpanel"
-																			aria-labelledby="list-patologia-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Testa e collo</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 2 -->
-																		<div class="tab-pane fade" id="list-patologia1"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia1-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Occhi</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 2-->
-																		<div class="tab-pane fade" id="list-patologia2"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia2-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Torace e cuore</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 3-->
-																		<div class="tab-pane fade" id="list-patologia3"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia3-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Spalla</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 4 -->
-																		<div class="tab-pane fade" id="list-patologia4"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia4-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Addome</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 5 -->
-																		<div class="tab-pane fade" id="list-patologia5"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia5-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Braccia e mani</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 6 -->
-																		<div class="tab-pane fade" id="list-patologia6"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia6-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Zona Pelvica</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 7 -->
-																		<div class="tab-pane fade" id="list-patologia7"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia7-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Gambe</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!-- patologia 8 -->
-																		<div class="tab-pane fade" id="list-patologia8"
-																			role="tabpanel"
-																			aria-labelledby="list-patologia8-list">
-																			<div class="row addremove-multiselect">
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Lista
-																							Patologie disponibili Piedi</div>
-																						<div class="panel-body">
-																							<select id="available-select"
-																								class="multiselect available form-control"
-																								size="17" multiple="multiple">
-																								<option>Afasia</option>
-																								<option>Amartoma ipotalamico</option>
-																								<option>Aneurismi cerebrali</option>
-																								<option>Angiomi cavernosi</option>
-																								<option>Disartria</option>
-																								<option>Disfonia</option>
-																								<option>Displasia corticale focale</option>
-																								<option>Distonie</option>
-																								<option>Emispasmo del facciale</option>
-																								<option>Epilessia del lobo temporale</option>
-																								<option>Ernie del disco</option>
-																								<option>Fistole artero-venose durali</option>
-																								<option>Gliomi</option>
-																								<option>Idrocefalo</option>
-																								<option>Linfomi</option>
-																								<option>Malformazione di Chiari</option>
-																								<option>Malformazioni artero-venose</option>
-																								<option>Medulloblastomi</option>
-																								<option>Meningiomi</option>
-																								<option>Metastasi cerebrale</option>
-																								<option>Mielopatia spondilogena
-																									cervicale</option>
-																								<option>Morbo di Parkinson</option>
-																								<option>Neurinomi</option>
-																								<option>Nevralgia del glosso-faringeo</option>
-																								<option>Nevralgia trigeminale</option>
-																								<option>Polimicrogiria</option>
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-
-																				<div
-																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																					<button type="button" id="rightall"
-																						class="rightall btn btn-info btn-block">
-																						<i class="fas fa-angle-double-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="right"
-																						class="right btn btn-info btn-block">
-																						<i class="fas fa-caret-right fa-1x"></i>
-																					</button>
-																					<button type="button" id="left"
-																						class="left btn btn-google btn-block">
-																						<i class="fas fa-caret-left fa-1x"></i>
-																					</button>
-																					<button type="button" id="leftall"
-																						class="leftall btn btn-google btn-block">
-																						<i class="fas fa-angle-double-left fa-1x"></i>
-																					</button>
-																				</div>
-
-																				<div class="col-lg-5 col-sm-5 col-xs-12">
-																					<div class="panel panel-default">
-																						<div class="panel-heading mb-2">Patologie
-																							selezionate</div>
-																						<div class="panel-body">
-																							<select id="selected-select"
-																								class="multiselect selected form-control"
-																								size="17" multiple="multiple">
-																							</select>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<hr class="sidebar-divider d-none d-md-block">
-															<div class="text-center">
-																<button type="submit"
-																	class="btn btn-secondary btn-user text-uppercase prevTab">
-																	<i class="fas fa-chevron-left"></i> Back
-																</button>
-																<button type="reset"
-																	class="btn btn-primary btn-user text-uppercase">Reset</button>
-																<button type="submit"
-																	class="btn btn-primary btn-user text-uppercase nextTab">Salva
-																	e continua</button>
-															</div>
-														</div>
-														<!-- End step 2 patologie paziente -->
-														<!-- Begin step 3 Associa device -->
-														<div class="tab-pane fade" id="AssociaDispositivi">
-															<h6 class="m-0 font-weight-light ">Lista dispositivi
-																disponibili (in questa table verranno visualizzati solo
-																device disponibili)</h6>
-															<hr class="sidebar-divider d-none d-md-block">
-															<div class="table-responsive">
-																<table class="table table-bordered" id="dataTable"
-																	width="100%" cellspacing="0">
-																	<thead class="thead-dark">
-																		<tr>
-																			<th scope="col">ID Hardware</th>
-																			<th scope="col">Marca</th>
-																			<th scope="col">Tipologia</th>
-																			<th scope="col">MAC Address</th>
-																			<th scope="col">Action</th>
-																		</tr>
-																	</thead>
-																	<tfoot class="thead-dark">
-																		<tr>
-																			<th scope="col">ID Hardware</th>
-																			<th scope="col">Marca</th>
-																			<th scope="col">Tipologia</th>
-																			<th scope="col">MAC Address</th>
-																			<th scope="col">Action</th>
-																		</tr>
-																	</tfoot>
-																	<tbody>
-																		<tr>
-																			<th scope="row">ID1245SS3R</th>
-																			<td>Apple Watch</td>
-																			<td>Smart Band</td>
-																			<td>ASDFERT-SDF-WERT</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">ID1245SS3R</th>
-																			<td>Apple Watch</td>
-																			<td>Smart Band</td>
-																			<td>ASDFERT-SDF-WERT</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">ID1245SS3R</th>
-																			<td>Apple Watch</td>
-																			<td>Smart Band</td>
-																			<td>ASDFERT-SDF-WERT</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">ID1245SS3R</th>
-																			<td>Apple Watch</td>
-																			<td>Smart Band</td>
-																			<td>ASDFERT-SDF-WERT</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Huawei Watch GT 2 Pro</td>
-																			<td>Bilancia Smart</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><span
-																				class="btn-sm btn-primary btn-circle btn-icon"><i
-																					class="fas fa-check" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Sensore Associato"></i></span> <a
-																				href="#"
-																				class="btn-sm btn-google btn-circle btn-icon"
-																				data-toggle="modal" data-target="#unpairModal"><i
-																					class="fas fa-times" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Unpair Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Huawei Watch GT 2 Pro</td>
-																			<td>Bilancia Smart</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Huawei Watch GT 2 Pro</td>
-																			<td>Bilancia Smart</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Huawei Watch GT 2 Pro</td>
-																			<td>Bilancia Smart</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><span
-																				class="btn-sm btn-primary btn-circle btn-icon"><i
-																					class="fas fa-check" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Sensore Associato"></i></span> <a
-																				href="#"
-																				class="btn-sm btn-google btn-circle btn-icon"
-																				data-toggle="modal" data-target="#unpairModal"><i
-																					class="fas fa-times" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Unpair Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Huawei Watch GT 2 Pro</td>
-																			<td>Bilancia Smart</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Brand Cinese</td>
-																			<td>Contour next</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Brand Cinese</td>
-																			<td>Contour next</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Brand Cinese</td>
-																			<td>Contour next</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Brand Cinese</td>
-																			<td>Contour next</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																		<tr>
-																			<th scope="row">IDFGERT45</th>
-																			<td>Brand Cinese</td>
-																			<td>Contour next</td>
-																			<td>QWERTY-234-VAER</td>
-																			<td><a href="#"
-																				class="btn-sm btn-info btn-circle btn-icon"
-																				data-toggle="modal"
-																				data-target="#AssociaDeviceModal"><i
-																					class="fas fa-exchange-alt" data-toggle="tooltip"
-																					data-placement="top" title=""
-																					data-original-title="Associa Sensore"></i></a></td>
-																		</tr>
-																	</tbody>
-																</table>
-															</div>
-															<hr class="sidebar-divider d-none d-md-block">
-															<div class="text-center">
-																<button type="submit"
-																	class="btn btn-secondary btn-user text-uppercase prevTab">
-																	<i class="fas fa-chevron-left"></i> Back
-																</button>
-																<button type="submit"
-																	class="btn btn-primary btn-user text-uppercase">Completa
-																	la registrazione</button>
-															</div>
-														</div>
-														<!-- End step 3 Associa device -->
+														</form>
 													</div>
-												</form>
+													<!-- End step 1 anagrafica paziente -->
+													<!-- Begin step 2 patologie paziente -->
+													<div class="tab-pane fade" id="PatologiePaziente">
+														<h6 class="m-0 font-weight-light ">Seleziona una o
+															più patologie</h6>
+														<hr class="sidebar-divider d-none d-md-block">
+														<div class="row">
+															<div class="col-2">
+																<div class="list-group" id="list-tab" role="tablist">
+																	<a
+																		class="list-group-item list-group-item-action active"
+																		id="list-patologia-list" data-toggle="list"
+																		href="#list-patologia" role="tab"
+																		aria-controls="patologia">Testa e collo</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia1-list" data-toggle="list"
+																		href="#list-patologia1" role="tab"
+																		aria-controls="patologia1">Occhi</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia2-list" data-toggle="list"
+																		href="#list-patologia2" role="tab"
+																		aria-controls="patologia2">Torace e cuore</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia3-list" data-toggle="list"
+																		href="#list-patologia3" role="tab"
+																		aria-controls="patologia3">Spalla</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia4-list" data-toggle="list"
+																		href="#list-patologia4" role="tab"
+																		aria-controls="patologia4">Addome</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia5-list" data-toggle="list"
+																		href="#list-patologia5" role="tab"
+																		aria-controls="patologia5">Braccia e mani</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia6-list" data-toggle="list"
+																		href="#list-patologia6" role="tab"
+																		aria-controls="patologia6">Zona pelvica</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia7-list" data-toggle="list"
+																		href="#list-patologia7" role="tab"
+																		aria-controls="patologia7">Gambe</a> <a
+																		class="list-group-item list-group-item-action"
+																		id="list-patologia8-list" data-toggle="list"
+																		href="#list-patologia8" role="tab"
+																		aria-controls="patologia8">Piedi</a>
+																</div>
+															</div>
+															<div class="col-10">
+																<div class="tab-content" id="nav-tabContent">
+																	<!-- Patologia 1-->
+																	<div class="tab-pane fade show active"
+																		id="list-patologia" role="tabpanel"
+																		aria-labelledby="list-patologia-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Testa e collo</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 2 -->
+																	<div class="tab-pane fade" id="list-patologia1"
+																		role="tabpanel" aria-labelledby="list-patologia1-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Occhi</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 2-->
+																	<div class="tab-pane fade" id="list-patologia2"
+																		role="tabpanel" aria-labelledby="list-patologia2-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Torace e cuore</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 3-->
+																	<div class="tab-pane fade" id="list-patologia3"
+																		role="tabpanel" aria-labelledby="list-patologia3-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Spalla</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 4 -->
+																	<div class="tab-pane fade" id="list-patologia4"
+																		role="tabpanel" aria-labelledby="list-patologia4-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Addome</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 5 -->
+																	<div class="tab-pane fade" id="list-patologia5"
+																		role="tabpanel" aria-labelledby="list-patologia5-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Braccia e mani</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 6 -->
+																	<div class="tab-pane fade" id="list-patologia6"
+																		role="tabpanel" aria-labelledby="list-patologia6-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Zona Pelvica</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 7 -->
+																	<div class="tab-pane fade" id="list-patologia7"
+																		role="tabpanel" aria-labelledby="list-patologia7-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Gambe</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	<!-- patologia 8 -->
+																	<div class="tab-pane fade" id="list-patologia8"
+																		role="tabpanel" aria-labelledby="list-patologia8-list">
+																		<div class="row addremove-multiselect">
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Lista
+																						Patologie disponibili Piedi</div>
+																					<div class="panel-body">
+																						<select id="available-select"
+																							class="multiselect available form-control"
+																							size="17" multiple="multiple">
+																							<option>Afasia</option>
+																							<option>Amartoma ipotalamico</option>
+																							<option>Aneurismi cerebrali</option>
+																							<option>Angiomi cavernosi</option>
+																							<option>Disartria</option>
+																							<option>Disfonia</option>
+																							<option>Displasia corticale focale</option>
+																							<option>Distonie</option>
+																							<option>Emispasmo del facciale</option>
+																							<option>Epilessia del lobo temporale</option>
+																							<option>Ernie del disco</option>
+																							<option>Fistole artero-venose durali</option>
+																							<option>Gliomi</option>
+																							<option>Idrocefalo</option>
+																							<option>Linfomi</option>
+																							<option>Malformazione di Chiari</option>
+																							<option>Malformazioni artero-venose</option>
+																							<option>Medulloblastomi</option>
+																							<option>Meningiomi</option>
+																							<option>Metastasi cerebrale</option>
+																							<option>Mielopatia spondilogena
+																								cervicale</option>
+																							<option>Morbo di Parkinson</option>
+																							<option>Neurinomi</option>
+																							<option>Nevralgia del glosso-faringeo</option>
+																							<option>Nevralgia trigeminale</option>
+																							<option>Polimicrogiria</option>
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+
+																			<div
+																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																				<button type="button" id="rightall"
+																					class="rightall btn btn-info btn-block">
+																					<i class="fas fa-angle-double-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="right"
+																					class="right btn btn-info btn-block">
+																					<i class="fas fa-caret-right fa-1x"></i>
+																				</button>
+																				<button type="button" id="left"
+																					class="left btn btn-google btn-block">
+																					<i class="fas fa-caret-left fa-1x"></i>
+																				</button>
+																				<button type="button" id="leftall"
+																					class="leftall btn btn-google btn-block">
+																					<i class="fas fa-angle-double-left fa-1x"></i>
+																				</button>
+																			</div>
+
+																			<div class="col-lg-5 col-sm-5 col-xs-12">
+																				<div class="panel panel-default">
+																					<div class="panel-heading mb-2">Patologie
+																						selezionate</div>
+																					<div class="panel-body">
+																						<select id="selected-select"
+																							class="multiselect selected form-control"
+																							size="17" multiple="multiple">
+																						</select>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<hr class="sidebar-divider d-none d-md-block">
+														<div class="text-center">
+															<button type="submit"
+																class="btn btn-secondary btn-user text-uppercase prevTab">
+																<i class="fas fa-chevron-left"></i> Back
+															</button>
+															<button type="reset"
+																class="btn btn-primary btn-user text-uppercase">Reset</button>
+															<button type="submit"
+																class="btn btn-primary btn-user text-uppercase nextTab">Salva
+																e continua</button>
+														</div>
+													</div>
+													<!-- End step 2 patologie paziente -->
+													<!-- Begin step 3 Associa device -->
+													<div class="tab-pane fade" id="AssociaDispositivi">
+														<h6 class="m-0 font-weight-light ">Lista dispositivi
+															disponibili (in questa table verranno visualizzati solo
+															device disponibili)</h6>
+														<hr class="sidebar-divider d-none d-md-block">
+														<div class="table-responsive">
+															<table class="table table-bordered" id="dataTable"
+																width="100%" cellspacing="0">
+																<thead class="thead-dark">
+																	<tr>
+																		<th scope="col">ID Hardware</th>
+																		<th scope="col">Marca</th>
+																		<th scope="col">Tipologia</th>
+																		<th scope="col">MAC Address</th>
+																		<th scope="col">Action</th>
+																	</tr>
+																</thead>
+																<tfoot class="thead-dark">
+																	<tr>
+																		<th scope="col">ID Hardware</th>
+																		<th scope="col">Marca</th>
+																		<th scope="col">Tipologia</th>
+																		<th scope="col">MAC Address</th>
+																		<th scope="col">Action</th>
+																	</tr>
+																</tfoot>
+																<tbody>
+																	<tr>
+																		<th scope="row">ID1245SS3R</th>
+																		<td>Apple Watch</td>
+																		<td>Smart Band</td>
+																		<td>ASDFERT-SDF-WERT</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">ID1245SS3R</th>
+																		<td>Apple Watch</td>
+																		<td>Smart Band</td>
+																		<td>ASDFERT-SDF-WERT</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">ID1245SS3R</th>
+																		<td>Apple Watch</td>
+																		<td>Smart Band</td>
+																		<td>ASDFERT-SDF-WERT</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">ID1245SS3R</th>
+																		<td>Apple Watch</td>
+																		<td>Smart Band</td>
+																		<td>ASDFERT-SDF-WERT</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>Bilancia Smart</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><span
+																			class="btn-sm btn-primary btn-circle btn-icon"><i
+																				class="fas fa-check" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Sensore Associato"></i></span> <a
+																			href="#"
+																			class="btn-sm btn-google btn-circle btn-icon"
+																			data-toggle="modal" data-target="#unpairModal"><i
+																				class="fas fa-times" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Unpair Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>Bilancia Smart</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>Bilancia Smart</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>Bilancia Smart</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><span
+																			class="btn-sm btn-primary btn-circle btn-icon"><i
+																				class="fas fa-check" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Sensore Associato"></i></span> <a
+																			href="#"
+																			class="btn-sm btn-google btn-circle btn-icon"
+																			data-toggle="modal" data-target="#unpairModal"><i
+																				class="fas fa-times" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Unpair Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>Bilancia Smart</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Brand Cinese</td>
+																		<td>Contour next</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Brand Cinese</td>
+																		<td>Contour next</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Brand Cinese</td>
+																		<td>Contour next</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Brand Cinese</td>
+																		<td>Contour next</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																	<tr>
+																		<th scope="row">IDFGERT45</th>
+																		<td>Brand Cinese</td>
+																		<td>Contour next</td>
+																		<td>QWERTY-234-VAER</td>
+																		<td><a href="#"
+																			class="btn-sm btn-info btn-circle btn-icon"
+																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
+																				class="fas fa-exchange-alt" data-toggle="tooltip"
+																				data-placement="top" title=""
+																				data-original-title="Associa Sensore"></i></a></td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+														<hr class="sidebar-divider d-none d-md-block">
+														<div class="text-center">
+															<button type="submit"
+																class="btn btn-secondary btn-user text-uppercase prevTab">
+																<i class="fas fa-chevron-left"></i> Back
+															</button>
+															<button type="submit"
+																class="btn btn-primary btn-user text-uppercase">Completa
+																la registrazione</button>
+														</div>
+													</div>
+													<!-- End step 3 Associa device -->
+												</div>
 											</div>
 										</div>
 									</div>
@@ -1418,21 +1434,28 @@
 	<script type="text/javascript"
 		th:src="@{/webjars/bootstrap/4.5.3/js/bootstrap.bundle.min.js}"></script>
 
+
 	<!-- Core plugin JavaScript-->
 	<script type="text/javascript"
 		th:src="@{/webjars/jquery-easing/1.4.1/jquery.easing.min.js}"></script>
 
-	<!-- Custom scripts for all pages-->
-	<script type="text/javascript" th:src="@{/js/ecubit-admin.min.js}"></script>
 
 	<!-- Page level plugins -->
 	<script type="text/javascript"
 		th:src="@{/webjars/datatables/1.10.22/js/jquery.dataTables.min.js}"></script>
 	<script type="text/javascript"
 		th:src="@{/webjars/datatables/1.10.22/js/dataTables.bootstrap4.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+	<script type="text/javascript"
+		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.js}"></script>
 
 	<!-- Page level custom scripts -->
 	<script type="text/javascript" th:src="@{/js/demo/datatables-demo.js}"></script>
+
+	<!-- Custom scripts for all pages-->
+	<script type="text/javascript" th:src="@{/js/ecubit-admin.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/mio.js}"></script>
 
 </body>
 </html>

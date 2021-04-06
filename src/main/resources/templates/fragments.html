@@ -7,7 +7,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.3/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/4.5.3/css/bootstrap.min.css}" />
 
 <title>Registrazione</title>
 </head>
@@ -161,8 +162,8 @@
 	<hr class="sidebar-divider my-0">
 	<!-- Nav Item - Dashboard -->
 	<li class="nav-item active"><a class="nav-link"
-		th:href="@{/{value}(value='dashboard')}"> <i class="fas fa-fw fa-tachometer-alt"></i>
-			<span>Dashboard</span></a></li>
+		th:href="@{/{value}(value='dashboard')}"> <i
+			class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
 	<!-- Divider -->
 	<hr class="sidebar-divider">
 	<!-- Nav Item - Sezione Pazienti -->
@@ -175,8 +176,8 @@
 		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
 			data-parent="#accordionSidebar">
 			<div class="bg-gray-300 py-2 collapse-inner rounded">
-				<a class="collapse-item" href="pages/new-paziente.html">Nuovo
-					Paziente</a> <a class="collapse-item" href="pages/lista-paziente.html">Lista
+				<a class="collapse-item" th:href="@{/patients}">Nuovo Paziente</a> <a
+					class="collapse-item" href="pages/lista-paziente.html">Lista
 					Pazienti</a>
 			</div>
 		</div></li>
