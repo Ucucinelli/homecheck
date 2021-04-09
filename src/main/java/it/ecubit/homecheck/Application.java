@@ -36,7 +36,7 @@ public class Application extends SpringBootServletInitializer implements WebMvcC
 	BuildProperties buildProperties;
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args); 
+		SpringApplication.run(Application.class, args);  
 	}
 
 	/*
