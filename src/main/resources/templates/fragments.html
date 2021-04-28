@@ -129,12 +129,29 @@
 			<div
 				class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
 				aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="pages/profilo-admin.html#Profilo">
-					<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profilo
+				<a class="dropdown-item" href="profilo-admin.html"> <i
+					class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profilo
+					Dottore
+				</a> <a class="dropdown-item" href="profilo-admin.html#Impostazioni">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+					Impostazioni Dottore
+				</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="profilo-paziente.html"> <i
+					class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profilo
+					Paziente
+				</a> <a class="dropdown-item" href="profilo-paziente.html#Impostazioni">
+					<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+					Impostazioni Paziente
+				</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="profilo-assistente.html"> <i
+					class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Profilo
+					Assistente
 				</a> <a class="dropdown-item"
-					href="pages/profilo-admin.html#Impostazioni"> <i
+					href="profilo-assistente.html#Impostazioni"> <i
 					class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-					Impostazioni
+					Impostazioni Assistente
 				</a>
 				<div class="dropdown-divider"></div>
 				<a class="dropdown-item" href="#" data-toggle="modal"
@@ -154,6 +171,7 @@
 
 
 
+
 <!-- Sidebar -->
 <ul th:fragment="fragment_sidebar"
 	class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
@@ -162,8 +180,9 @@
 	<hr class="sidebar-divider my-0">
 	<!-- Nav Item - Dashboard -->
 	<li class="nav-item active"><a class="nav-link"
-		th:href="@{/{value}(value='dashboard')}"> <i
-			class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+		th:href="@{/{value}(value='dashboard')}"> 
+		<i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+		  
 	<!-- Divider -->
 	<hr class="sidebar-divider">
 	<!-- Nav Item - Sezione Pazienti -->
@@ -173,8 +192,8 @@
 		data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
 		aria-controls="collapseTwo"> <i class="fas fa-user"></i> <span>Pazienti</span>
 	</a>
-		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-			data-parent="#accordionSidebar">
+		<div id="collapseTwo" class="collapse"
+		aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 			<div class="bg-gray-300 py-2 collapse-inner rounded">
 				<a class="collapse-item" th:href="@{/patients}">Nuovo Paziente</a> <a
 					class="collapse-item" href="pages/lista-paziente.html">Lista
@@ -221,6 +240,9 @@
 	</div>
 </ul>
 <!-- End Sidebar -->
+
+
+
 
 
 

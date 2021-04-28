@@ -1,5 +1,7 @@
 package it.ecubit.homecheck.service;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 
@@ -11,4 +13,6 @@ public interface UserService extends UserDetailsService {
     PSEUser findByEmail(String email);
 
     PSEUser save(UserRegistrationDto registration);
+
+	List<PSEUser> getAllByRuolo();
 }

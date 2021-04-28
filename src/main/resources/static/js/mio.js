@@ -1,8 +1,11 @@
 $(function() {
 	$("#datepicker").datepicker({
+		
 		dateFormat: "dd/mm/yy",
 		onSelect: function(date) {
 			//defined your own method here
+			//var startdate = $('#datepicker').datepicker('getDate').toISOString();
+			//$("#datepicker").val(startdate);
 		}
 	});
 	$("#datepicker").attr("autocomplete", "off");

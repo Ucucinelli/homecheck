@@ -2,6 +2,7 @@ package it.ecubit.homecheck.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import it.ecubit.pse.mongo.entities.PSERole;
 import it.ecubit.pse.mongo.entities.PSEUser;
 import it.ecubit.pse.mongo.repositories.UserRepository;
+import it.ecubit.pse.mongo.utils.TypedRole;
 import it.ecubit.homecheck.config.MongoUser;
 import it.ecubit.homecheck.web.dto.UserRegistrationDto;
 
@@ -60,8 +62,13 @@ public class UserServiceImpl implements UserService {
 
 	
 	  private Collection<? extends GrantedAuthority>
-	  mapRolesToAuthorities(Collection<PSERole> roles){ return roles.stream()
+	  mapRolesToAuthorities(Collection<TypedRole> roles){ return roles.stream()
 	  .map(role -> new SimpleGrantedAuthority(role.getRuolo()))
 	  .collect(Collectors.toList()); }
+
+	@Override
+	public List<PSEUser> getAllByRuolo() {
+		return (List<PSEUser>) userRepository.findAll();
+	}
 	 
 }

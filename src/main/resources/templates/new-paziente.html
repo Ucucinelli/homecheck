@@ -55,7 +55,8 @@
 					<!-- Breadcrumb -->
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a th:href="@{/{value}(value='dashboard')}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a
+								th:href="@{/{value}(value='dashboard')}">Dashboard</a></li>
 							<li class="breadcrumb-item active" aria-current="page">Nuovo
 								Paziente</li>
 						</ol>
@@ -130,7 +131,6 @@
 														role="progressbar" aria-valuenow="1" aria-valuemin="1"
 														aria-valuemax="5" style="width: 30%;">Step 1 of 3</div>
 												</div>
-
 												<div class="tab-content">
 													<!-- Begin step 1 anagrafica paziente -->
 													<div class="tab-pane active" id="AnagraficaPaziente">
@@ -211,12 +211,12 @@
 																		th:each="error: ${#fields.errors('sex')}"
 																		th:text="${error}">Validation error</p>
 																</div>
-																<div class="form-group col-md-4">
+																<div class="form-group col-md-3">
 																	<label for="DOB">Data di nascita</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{birthDate}" class="form-control"
+																		<input th:field="*{birthDateString}" class="form-control"
 																			type="text" id="datepicker"
-																			placeholder="formato gg / mm / aaaa" aria-label="DOB"
+																			placeholder="gg / mm / aaaa" aria-label="DOB"
 																			required>
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
@@ -228,52 +228,10 @@
 																		th:each="error: ${#fields.errors('birthDate')}"
 																		th:text="${error}">Validation error</p>
 																</div>
-																<div class="form-group col-md-4">
-																	<label for="LuogoDiNascita">Luogo Di Nascita</label>
-																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
-																			id="inputLuogoDiNascita"
-																			placeholder="Comune di nascita"
-																			aria-label="LuogoDiNascita">
-																		<div class="input-group-append">
-																			<span class="input-group-text"> <i
-																				class="fas fa-map-marker-alt"></i>
-																			</span>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group col-md-4">
-																	<label for="Residenza">Residenza</label>
-																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
-																			id="inputResidenza" placeholder="Comune di residenza"
-																			aria-label="Residenza">
-																		<div class="input-group-append">
-																			<span class="input-group-text"> <i
-																				class="fas fa-map-marker-alt"></i>
-																			</span>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group col-md-4">
-																	<label for="IndirizzoResidenza">Indirizzo di
-																		Residenza</label>
-																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
-																			id="inputIndirizzoResidenza"
-																			placeholder="indirizzo di residenza"
-																			aria-label="IndirizzoResidenza">
-																		<div class="input-group-append">
-																			<span class="input-group-text"> <i
-																				class="fas fa-building"></i>
-																			</span>
-																		</div>
-																	</div>
-																</div>
-																<div class="form-group col-md-4">
+																<div class="form-group col-md-3">
 																	<label for="inputCodFiscale">Codice Fiscale</label>
 																	<div class="input-group input-group-joined">
-																		<input class="form-control" type="text"
+																		<input th:field="*{fiscalCode}" class="form-control" type="text"
 																			id="inputCodFiscale"
 																			placeholder="Inserisci CodiceFiscale"
 																			aria-label="inputCodFiscale">
@@ -283,24 +241,160 @@
 																			</span>
 																		</div>
 																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('fiscalCode')}"
+																		th:text="${error}">Validation error</p>
 																</div>
-																<div class="form-group col-md-4">
-																	<label for="PatologiaPrincipale">Assistente
-																		Sanitario</label>
-																	<!-- <select th:field="*{clinicianId}" 
-																		id="PatologiaPrincipale"
+																<div class="form-group col-md-3">
+																	<label for="LuogoDiNascita">Luogo Di Nascita</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{birthPlace}" class="form-control" type="text"
+																			id="inputLuogoDiNascita"
+																			placeholder="Comune di nascita"
+																			aria-label="comuneDiNascita">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-map-marker-alt"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('birthPlace')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="ProvinciaDiNascita">Provincia di nascita</label> 
+																		<select th:field="*{birthProvince}" 
+																		id="ProvinciaDiNascita" class="form-control custom-select">
+																		<option selected th:value="''">Seleziona la Provincia</option>
+																		<option  th:each="provincia: ${province}" th:value="${provincia.code}"
+																		 th:text="${provincia.code}"/>
+																	</select>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('birthProvince')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="Cittadinanza">Cittadinanza</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{nationality}" class="form-control" type="text"
+																			id="inputCittadinanza" placeholder="Inserisci Stato"
+																			aria-label="Cittadinanza">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-map-marker-alt"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('nationality')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="IndirizzoResidenza">Indirizzo di
+																		Residenza</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{address}" class="form-control" type="text"
+																			id="inputIndirizzoResidenza"
+																			placeholder="Indirizzo di residenza"
+																			aria-label="IndirizzoResidenza">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-map-marker-alt"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('address')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="ComuneResidenza">Comune di
+																		Residenza</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{city}" class="form-control" type="text"
+																			id="inputComuneResidenza"
+																			placeholder="Comune di residenza"
+																			aria-label="ComuneResidenza">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-map-marker-alt"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('city')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="ProvinciaResidenza">Provincia</label> <select
+																		th:field="*{province}" id="ProvinciaResidenza"
 																		class="form-control custom-select">
-																		<option selected>Seleziona...</option>
-																		<option>Roberto Rossi</option>
-																		<option>Alessandro Rossi</option>
-																	</select> -->
+																		<option selected th:value="''">Seleziona la Provincia</option>
+																		<option  th:each="provincia: ${province}" th:value="${provincia.code}"
+																		 th:text="${provincia.code}"/>
+																	</select>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('province')}"
+																		th:text="${error}">Validation error</p>
 																</div>
-																<div class="form-group col-md-4">
+																<div class="form-group col-md-3">
+																	<label for="StatoResidenza">Stato</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{country}" class="form-control" type="text"
+																			id="inputStatoResidenza"
+																			placeholder="Inserisci Stato"
+																			aria-label="StatoResidenza">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-map-marker-alt"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('country')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="numeroTelefono">Numero di Telefono
+																		Fisso</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{fixedPhone}" class="form-control" type="number"
+																			id="inputnumeroTelefono"
+																			placeholder="Inserisci Numero di telefono fisso"
+																			aria-label="numeroTelefono">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-phone"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('fixedPhone')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-3">
+																	<label for="numeroMobile">Numero di Cellulare</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{cellPhone}" class="form-control" type="number"
+																			id="inputnumeroMobile"
+																			placeholder="Inserisci Numero di cellulare"
+																			aria-label="numeroMobile">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-mobile"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('cellPhone')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-1">
 																	<label for="inputAltezza">Altezza</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{height}" class="form-control"
-																			type="number" id="inputAltezza" step="0.1"
-																			placeholder="Inserisci Altezza" aria-label="Altezza">
+																		<input th:field="*{height}" class="form-control" type="number" min="1"
+																			id="inputAltezza" placeholder="" aria-label="Altezza">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-arrows-alt-v"></i>
@@ -311,12 +405,11 @@
 																		th:each="error: ${#fields.errors('height')}"
 																		th:text="${error}">Validation error</p>
 																</div>
-																<div class="form-group col-md-4">
+																<div class="form-group col-md-1">
 																	<label for="inputPeso">Peso</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{weight}" class="form-control"
-																			type="number" id="inputPeso" step="0.1"
-																			placeholder="Inserisci Peso" aria-label="inputPeso">
+																		<input th:field="*{weight}" class="form-control" type="number" min="1" 
+																			id="inputPeso" placeholder="" aria-label="inputPeso">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-weight"></i>
@@ -327,7 +420,114 @@
 																		th:each="error: ${#fields.errors('weight')}"
 																		th:text="${error}">Validation error</p>
 																</div>
+																<div class="form-group col-md-4">
+																	<label for="MedicoBase">Medico di Base</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{clinicianFullName}" class="form-control" 
+																		    type="text" id="inputMedicoBase"
+																			placeholder="Inserisci medico di base"
+																			aria-label="MedicoBase">
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-user-nurse"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('clinicianFullName')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-4">
+																	<label for="assistenteSanitario">Assistente Sanitario</label> 
+																		<select id="assistenteSanitario" th:field="*{nurseId}"
+																		class="form-control custom-select">
+																		  <option th:value="''" selected>Seleziona Assistente Sanitario</option>
+																		 <option  th:each="user: ${users}" th:value="${user.id}"
+																		 th:text="${user.nome} + ' ' + ${user.cognome}"/>
+																	    </select>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('nurseId')}"
+																		th:text="${error}">Validation error</p>
+																</div>
 															</div>
+															<hr class="sidebar-divider d-none d-md-block">
+															<!-- Begin creazione account email e password-->
+															<h5 class="m-0 font-weight-light text-primary mb-2">Crea
+																Account paziente</h5>
+															<div class="form-row">
+																<div class="form-group col-md-4">
+																	<label for="inputEmail">E-mail</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{email}" class="form-control" type="text"
+																			id="inputEmail" placeholder="Inserisci e-mail"
+																			aria-label="inputEmail" required>
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-at"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('email')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+																<div class="form-group col-md-4">
+																	<label for="inputPassword">Password</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{password}" class="form-control" 
+																		    type="password" id="pwd"
+																			placeholder="Inserisci Password"
+																			aria-label="inputPassword" required>
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-lock"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('password')}"
+																		th:text="${error}">Validation error</p>
+																	<div id="pwd_strength_wrap">
+																		<div id="passwordDescription">Password non
+																			inserita</div>
+																		<div id="passwordStrength" class="strength0"></div>
+																		<div id="pswd_info">
+																			<strong>Suggerimenti per password efficaci:</strong>
+																			<ul>
+																				<li class="invalid" id="length">Almeno 8
+																					caratteri</li>
+																				<li class="invalid" id="pnum">Almeno un numero</li>
+																				<li class="invalid" id="capital">Almeno una
+																					lettera minuscola &amp; e una maiuscola</li>
+																				<li class="invalid" id="spchar">Almeno un
+																					carattere speciale</li>
+																			</ul>
+																		</div>
+																		<!-- END pswd_info -->
+																	</div>
+																	<!-- END pwd_strength_wrap -->
+																</div>
+																<div class="form-group col-md-4">
+																	<label for="inputConfermaPassword">Conferma
+																		Password</label>
+																	<div class="input-group input-group-joined">
+																		<input th:field="*{confirmPassword}" class="form-control" type="password"
+																			id="inputConfermaPassword"
+																			placeholder="Conferma Password"
+																			aria-label="inputConfermaPassword" required>
+																		<div class="input-group-append">
+																			<span class="input-group-text"> <i
+																				class="fas fa-lock"></i>
+																			</span>
+																		</div>
+																	</div>
+																	<p class="text-danger"
+																		th:each="error: ${#fields.errors('confirmPassword')}"
+																		th:text="${error}">Validation error</p>
+																</div>
+
+															</div>
+															<!-- End creazione account email e password-->
 															<hr class="sidebar-divider d-none d-md-block">
 															<div class="text-center">
 																<button type="reset"
@@ -1119,76 +1319,37 @@
 																width="100%" cellspacing="0">
 																<thead class="thead-dark">
 																	<tr>
-																		<th scope="col">ID Hardware</th>
+																		<th scope="col">Numero Seriale</th>
 																		<th scope="col">Marca</th>
+																		<th scope="col">Modello</th>
 																		<th scope="col">Tipologia</th>
 																		<th scope="col">MAC Address</th>
+																		<th scope="col">Data Assegnazione</th>
+																		<th scope="col">Termine Assegnazione</th>
 																		<th scope="col">Action</th>
 																	</tr>
 																</thead>
 																<tfoot class="thead-dark">
 																	<tr>
-																		<th scope="col">ID Hardware</th>
+																		<th scope="col">Numero Seriale</th>
 																		<th scope="col">Marca</th>
+																		<th scope="col">Modello</th>
 																		<th scope="col">Tipologia</th>
 																		<th scope="col">MAC Address</th>
+																		<th scope="col">Data Assegnazione</th>
+																		<th scope="col">Termine Assegnazione</th>
 																		<th scope="col">Action</th>
 																	</tr>
 																</tfoot>
 																<tbody>
 																	<tr>
-																		<th scope="row">ID1245SS3R</th>
-																		<td>Apple Watch</td>
-																		<td>Smart Band</td>
-																		<td>ASDFERT-SDF-WERT</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">ID1245SS3R</th>
-																		<td>Apple Watch</td>
-																		<td>Smart Band</td>
-																		<td>ASDFERT-SDF-WERT</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">ID1245SS3R</th>
-																		<td>Apple Watch</td>
-																		<td>Smart Band</td>
-																		<td>ASDFERT-SDF-WERT</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">ID1245SS3R</th>
-																		<td>Apple Watch</td>
-																		<td>Smart Band</td>
-																		<td>ASDFERT-SDF-WERT</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
+																		<td scope="row">IDFGERT45</td>
 																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>Bilancia Smart</td>
+																		<td>modello sensore</td>
+																		<td>tipologia sensore</td>
 																		<td>QWERTY-234-VAER</td>
+																		<td>19/04/2021</td>
+																		<td>19/12/2021</td>
 																		<td><span
 																			class="btn-sm btn-primary btn-circle btn-icon"><i
 																				class="fas fa-check" data-toggle="tooltip"
@@ -1204,32 +1365,11 @@
 																	<tr>
 																		<th scope="row">IDFGERT45</th>
 																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>Bilancia Smart</td>
+																		<td>modello sensore</td>
+																		<td>tipologia sensore</td>
 																		<td>QWERTY-234-VAER</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>Bilancia Smart</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>Bilancia Smart</td>
-																		<td>QWERTY-234-VAER</td>
+																		<td>19/04/2021</td>
+																		<td>19/12/2021</td>
 																		<td><span
 																			class="btn-sm btn-primary btn-circle btn-icon"><i
 																				class="fas fa-check" data-toggle="tooltip"
@@ -1245,8 +1385,11 @@
 																	<tr>
 																		<th scope="row">IDFGERT45</th>
 																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>Bilancia Smart</td>
+																		<td>modello sensore</td>
+																		<td>tipologia sensore</td>
 																		<td>QWERTY-234-VAER</td>
+																		<td>--</td>
+																		<td>--</td>
 																		<td><a href="#"
 																			class="btn-sm btn-info btn-circle btn-icon"
 																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
@@ -1256,9 +1399,12 @@
 																	</tr>
 																	<tr>
 																		<th scope="row">IDFGERT45</th>
-																		<td>Brand Cinese</td>
-																		<td>Contour next</td>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>modello sensore</td>
+																		<td>tipologia sensore</td>
 																		<td>QWERTY-234-VAER</td>
+																		<td>--</td>
+																		<td>--</td>
 																		<td><a href="#"
 																			class="btn-sm btn-info btn-circle btn-icon"
 																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
@@ -1268,45 +1414,12 @@
 																	</tr>
 																	<tr>
 																		<th scope="row">IDFGERT45</th>
-																		<td>Brand Cinese</td>
-																		<td>Contour next</td>
+																		<td>Huawei Watch GT 2 Pro</td>
+																		<td>modello sensore</td>
+																		<td>tipologia sensore</td>
 																		<td>QWERTY-234-VAER</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Brand Cinese</td>
-																		<td>Contour next</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Brand Cinese</td>
-																		<td>Contour next</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Brand Cinese</td>
-																		<td>Contour next</td>
-																		<td>QWERTY-234-VAER</td>
+																		<td>--</td>
+																		<td>--</td>
 																		<td><a href="#"
 																			class="btn-sm btn-info btn-circle btn-icon"
 																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
@@ -1352,6 +1465,7 @@
 
 		</div>
 		<!-- End of Content Wrapper -->
+		<!-- End of Content Wrapper -->
 
 	</div>
 	<!-- End of Page Wrapper -->
@@ -1377,7 +1491,7 @@
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Cancella</button>
-					<a class="btn btn-primary" href="../index.html">Logout</a>
+					<a class="btn btn-primary" th:href="@{/{value}(value='logout')}">Logout</a>
 				</div>
 			</div>
 		</div>
@@ -1418,8 +1532,36 @@
 						<span aria-hidden="true">×</span>
 					</button>
 				</div>
-				<div class="modal-body">Sei sicuro di voler Associare Marca
-					Device al Paziente Pippo?</div>
+				<div class="modal-body">
+					<h6 class="m-0 font-weight-bold">Inserisci la data termine di
+						assegnazione</h6>
+					<form>
+						<div class="form-row mt-4">
+							<!-- data di assegnazione -->
+							<div class="form-group col-md-6">
+								<label for="date2">Data Assegnazione</label>
+								<div class="input-group input-group-joined">
+									<!-- <input class="date form-control" id="date2" type="text" placeholder="YYYY/MM/DD" /> -->
+									<input class="form-control" id="date2" type="text"
+										placeholder="19/04/2021" disabled>
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="far fa-calendar-alt"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="date3">Termine Assegnazione</label>
+								<div class="input-group input-group-joined">
+									<input class="date form-control" id="date3" type="text"
+										placeholder="YYYY/MM/DD" />
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Close</button>
@@ -1428,6 +1570,8 @@
 			</div>
 		</div>
 	</div>
+
+
 	<!-- Bootstrap core JavaScript-->
 	<script type="text/javascript"
 		th:src="@{/webjars/jquery/3.5.1/jquery.min.js/}"></script>

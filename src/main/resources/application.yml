@@ -1,4 +1,8 @@
-# Spring and Spring Web MVC specific settings
+# User domain    
+user:
+  domain: hida
+  
+# Spring and Spring Web MVC specific settings  
 spring:
   application:
     name: homecheck
@@ -166,3 +170,4 @@ eureka:
     non-secure-port: ${server.port}
     #health-check-url: http://${config.eureka.instance.hostname:localhost}:${eureka.instance.non-secure-port}/actuator/health
     status-page-url: http://localhost:${eureka.instance.non-secure-port}/actuator/info
+
