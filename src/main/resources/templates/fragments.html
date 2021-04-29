@@ -21,7 +21,7 @@
 	<div class="top-brand">
 		<a class="d-flex align-items-center justify-content-center"
 			th:href="@{/{value}(value='dashboard')}"> <img
-			th:src="@{img/logo-homecheck.svg}" alt="logo" class="top-brand-logo" />
+			th:src="@{/img/logo-homecheck.svg}" alt="logo" class="top-brand-logo" />
 		</a>
 	</div>
 	<!-- Sidebar Toggle (Topbar) -->
@@ -124,7 +124,7 @@
 			aria-expanded="false"> <span
 				class="mr-2 d-none d-lg-inline text-gray-600 small">Dott.
 					Roberto Marcuzzi</span> <img class="img-profile rounded-circle"
-				src="img/undraw_profile.svg">
+					th:src="@{/img/undraw_profile.svg}">
 		</a> <!-- Dropdown - User Information -->
 			<div
 				class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -195,9 +195,8 @@
 		<div id="collapseTwo" class="collapse"
 		aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 			<div class="bg-gray-300 py-2 collapse-inner rounded">
-				<a class="collapse-item" th:href="@{/patients}">Nuovo Paziente</a> <a
-					class="collapse-item" href="pages/lista-paziente.html">Lista
-					Pazienti</a>
+				<a class="collapse-item" th:href="@{/patients}">Nuovo Paziente</a> 
+				<a class="collapse-item" th:href="@{/patients/list}">Lista Pazienti</a>
 			</div>
 		</div></li>
 

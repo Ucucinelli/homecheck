@@ -18,11 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import it.ecubit.homecheck.UserProperties;
 import it.ecubit.homecheck.web.dto.HomeCheckPatientUserDTO;
-import it.ecubit.homecheck.web.dto.UserRegistrationDto;
 import it.ecubit.pse.api.exceptions.InvalidParameterFormatException;
 import it.ecubit.pse.api.exceptions.PSEServiceException;
 import it.ecubit.pse.api.interfaces.AslVtPatientServiceInterface;
@@ -67,19 +65,45 @@ public class PatientController {
 
 	@Autowired
 	private ProvinceService provinceService;
+	
+	private String nurseId = "5";
 
 	@ModelAttribute("patient")
 	public HomeCheckPatientUserDTO userRegistrationDto() {
 		return new HomeCheckPatientUserDTO();
 	}
 
+
 	@GetMapping
 	public String showRegistrationForm(Model model) {
 		List<Province> province = provinceService.getAll(Sort.by(Order.asc(Province.CODE_FIELD_NAME)));
-		List<PSEUser> users = userService.getAllByRuolo();
+		List<PSEUser> users = userService.getAllByRuolo(this.nurseId);
 		model.addAttribute("province", province);
 		model.addAttribute("users", users);
 		return "new-paziente";
+	}
+	
+	
+	@GetMapping(path = "list")
+	public String getAllAsList(Model model) throws PSEServiceException {
+		List<? extends HomeCheckPatient> patients;
+		if(this.userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+			patients = aslVtPatientService.getAllAsList();
+		}
+		else if(this.userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+			patients = hidaPatientService.getAllAsList(); 
+		}
+		else if(this.userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+			patients = lncPatientService.getAllAsList();
+		}
+		else if(this.userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+			patients = salusPatientService.getAllAsList();
+		}
+		else {
+			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {this.userDomain});
+		}
+		model.addAttribute("patients", patients);
+		return "lista-paziente";
 	}
 
 	@PostMapping
