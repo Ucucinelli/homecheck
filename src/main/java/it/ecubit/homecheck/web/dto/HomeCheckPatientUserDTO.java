@@ -129,6 +129,7 @@ public class HomeCheckPatientUserDTO implements IndexedHomeCheckPatient, Indexed
 		patient.setTelefonoFisso(this.fixedPhone);
 		patient.setTelefonoCellulare(this.cellPhone);
 		patient.setIdOperatoreSanitarioAssegnato(this.nurseId);
+		patient.setNomeOperatoreSanitarioAssegnato(this.nurseFullName);
 		patient.setPatologie(this.pathologies);
 		patient.setEmail(this.email);
 		return patient;
@@ -268,6 +269,9 @@ public class HomeCheckPatientUserDTO implements IndexedHomeCheckPatient, Indexed
 
 	@JsonProperty(ID_NURSE_JSON_ATTR_NAME)
 	private String nurseId;
+	
+	@JsonProperty(NURSE_FULL_NAME_JSON_ATTR_NAME)
+	private String nurseFullName;
 
 	@JsonProperty(HC_PATHOLOGIES_JSON_ATTR_NAME)
 	private Set<HCPathology> pathologies = new HashSet<>();

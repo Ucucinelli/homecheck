@@ -601,33 +601,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							 <option  th:each="pathology: ${pathologiesTestaECollo}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>							
 																						</select>
 																					</div>
 																				</div>
@@ -679,33 +654,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							 <option  th:each="pathology: ${pathologiesOcchi}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -757,33 +707,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesToraceECuore}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -835,33 +760,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesSpalla}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -913,33 +813,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesAddome}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -991,33 +866,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesBracciaEMani}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -1069,33 +919,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesZonaPelvica}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -1147,33 +972,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesGambe}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
@@ -1225,33 +1025,8 @@
 																						<select id="available-select"
 																							class="multiselect available form-control"
 																							size="17" multiple="multiple">
-																							<option>Afasia</option>
-																							<option>Amartoma ipotalamico</option>
-																							<option>Aneurismi cerebrali</option>
-																							<option>Angiomi cavernosi</option>
-																							<option>Disartria</option>
-																							<option>Disfonia</option>
-																							<option>Displasia corticale focale</option>
-																							<option>Distonie</option>
-																							<option>Emispasmo del facciale</option>
-																							<option>Epilessia del lobo temporale</option>
-																							<option>Ernie del disco</option>
-																							<option>Fistole artero-venose durali</option>
-																							<option>Gliomi</option>
-																							<option>Idrocefalo</option>
-																							<option>Linfomi</option>
-																							<option>Malformazione di Chiari</option>
-																							<option>Malformazioni artero-venose</option>
-																							<option>Medulloblastomi</option>
-																							<option>Meningiomi</option>
-																							<option>Metastasi cerebrale</option>
-																							<option>Mielopatia spondilogena
-																								cervicale</option>
-																							<option>Morbo di Parkinson</option>
-																							<option>Neurinomi</option>
-																							<option>Nevralgia del glosso-faringeo</option>
-																							<option>Nevralgia trigeminale</option>
-																							<option>Polimicrogiria</option>
+																							<option  th:each="pathology: ${pathologiesPiedi}" th:value="${pathology.id}"
+						                                                                       th:text="${pathology.nome}"/>
 																						</select>
 																					</div>
 																				</div>
