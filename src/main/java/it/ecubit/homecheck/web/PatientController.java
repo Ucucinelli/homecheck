@@ -2,8 +2,10 @@ package it.ecubit.homecheck.web;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,10 +30,13 @@ import it.ecubit.pse.api.interfaces.AslVtPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.HidaPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.LncPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.SalusPatientServiceInterface;
+import it.ecubit.pse.api.services.DeviceService;
+import it.ecubit.pse.api.services.DeviceTypeService;
 import it.ecubit.pse.api.services.HCPathologyService;
 import it.ecubit.pse.api.services.ProvinceService;
 import it.ecubit.pse.api.services.UserService;
 import it.ecubit.pse.mongo.entities.AslVtPatient;
+import it.ecubit.pse.mongo.entities.Device;
 import it.ecubit.pse.mongo.entities.Domain;
 import it.ecubit.pse.mongo.entities.HCPathology;
 import it.ecubit.pse.mongo.entities.HidaPatient;
@@ -62,14 +68,18 @@ public class PatientController {
 	
 	@Autowired
 	private HCPathologyService hcPathologyService;
+	
+	@Autowired
+	private ProvinceService provinceService;
+	
+	@Autowired
+	private DeviceService deviceService;
 
 	@Value("${user.domain}")
 	private String userDomain;
 
 	UserProperties userProperties;
 
-	@Autowired
-	private ProvinceService provinceService;
 	
 	private String nurseId = "5";
 
@@ -96,6 +106,8 @@ public class PatientController {
 		pathologiesPiedi = hcPathologyService.getByScope(HCPathology.PathologyScope.PIEDI.toString());
 		pathologiesGenerico = hcPathologyService.getByScope(HCPathology.PathologyScope.GENERICO.toString());
 		
+		List<Device> devices = deviceService.findAllUnassigned();
+		
 		model.addAttribute("pathologiesTestaECollo", pathologiesTestaECollo);
 		model.addAttribute("pathologiesOcchi", pathologiesOcchi);
 		model.addAttribute("pathologiesToraceECuore", pathologiesToraceECuore);
@@ -106,6 +118,8 @@ public class PatientController {
 		model.addAttribute("pathologiesGambe", pathologiesGambe);
 		model.addAttribute("pathologiesPiedi", pathologiesPiedi);
 		model.addAttribute("pathologiesGenerico", pathologiesGenerico);
+		
+		model.addAttribute("devices", devices);
 		return new HomeCheckPatientUserDTO();
 	}
 
@@ -141,9 +155,43 @@ public class PatientController {
 		model.addAttribute("patients", patients);
 		return "lista-paziente";
 	}
-
+	
+	
+	@GetMapping(path = "/{id}")
+	public String getById(@PathVariable("id") String patientIdentifier, Model model) throws PSEServiceException {
+		PSEUser user = userService.getById(patientIdentifier);
+		HomeCheckPatient patient;
+		if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+			patient = aslVtPatientService.getById(patientIdentifier);
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+			patient = hidaPatientService.getById(patientIdentifier);				
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+			patient = lncPatientService.getById(patientIdentifier);			
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+			patient = salusPatientService.getById(patientIdentifier);			
+		}
+		else {
+			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
+		}
+		HomeCheckPatientUserDTO patientDTO = new HomeCheckPatientUserDTO(patient, user);
+		if (patientDTO.getBirthDate() != null) {
+		   String birthDateString = patientDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		   patientDTO.setBirthDateString(birthDateString);
+		}
+		model.addAttribute("patient", patientDTO);
+		List<Province> province = provinceService.getAll(Sort.by(Order.asc(Province.CODE_FIELD_NAME)));
+		List<PSEUser> users = userService.getAllByRole(this.nurseId);
+		model.addAttribute("province", province);
+		model.addAttribute("users", users);
+		return "scheda-paziente";
+	}
+	
+	
 	@PostMapping
-	public String registerUserAccount(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO,
+	public String registerUserAccount(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO, Model model,
 			BindingResult result) throws PSEServiceException {
 
 		/*
@@ -170,19 +218,42 @@ public class PatientController {
 				PSEUser clinicianAsUser = userService.getById(newPatient.getIdMedico());
 				newPatient.setNomeMedicoCurante(clinicianAsUser.getNome() + " " + clinicianAsUser.getCognome());
 			}
-			if (newPatient.getIdOperatoreSanitarioAssegnato() != null && newPatient.getNomeOperatoreSanitarioAssegnato() == null) {
+			if (!newPatient.getIdOperatoreSanitarioAssegnato().equals("") && newPatient.getNomeOperatoreSanitarioAssegnato() == null) {
 				PSEUser nurseAsUser = userService.getById(newPatient.getIdOperatoreSanitarioAssegnato());
 				newPatient.setNomeOperatoreSanitarioAssegnato(nurseAsUser.getNome() + " " + nurseAsUser.getCognome());
 			}
+			for (Device device: patientDTO.getDevices()) {
+				if (device.getTermineAssegnazioneString() != null) {
+				   LocalDate dateEnd = LocalDate.parse(device.getTermineAssegnazioneString(), formatter);
+				   device.setTermineAssegnazione(dateEnd);
+				}
+			}
 			if (userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
 				AslVtPatient patient = aslVtPatientService.save((AslVtPatient) newPatient);
-				System.out.println("paziente : " + patient);
+				for (Device device: patientDTO.getDevices()) {
+					if (device.getSelezionato())
+					   deviceService.assignDeviceToPatient(device.getId(), patient.getId(), Optional.of(device.getTermineAssegnazione()));
+				}
+				
 			} else if (userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
-				hidaPatientService.save((HidaPatient) newPatient);
+				HidaPatient newHidaPatient = hidaPatientService.save((HidaPatient) newPatient);
+				model.addAttribute("patient", newHidaPatient);
+				for (Device device: patientDTO.getDevices()) {
+					if (device.getSelezionato() != null)
+					   deviceService.assignDeviceToPatient(device.getId(), newHidaPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+				}
 			} else if (userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
-				lncPatientService.save((LncPatient) newPatient);
+				LncPatient newLncPatient = lncPatientService.save((LncPatient) newPatient);
+				for (Device device: patientDTO.getDevices()) {
+					if (device.getSelezionato())
+					   deviceService.assignDeviceToPatient(device.getId(), newLncPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+				}
 			} else if (userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
-				salusPatientService.save((SalusPatient) newPatient);
+				SalusPatient newSalusPatient = salusPatientService.save((SalusPatient) newPatient);
+				for (Device device: patientDTO.getDevices()) {
+					if (device.getSelezionato())
+					   deviceService.assignDeviceToPatient(device.getId(), newSalusPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+				}
 			} else {
 				throw new InvalidParameterFormatException("domain.not.recognized", new Object[] { userDomain });
 			}

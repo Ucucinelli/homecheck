@@ -21,6 +21,7 @@
 	type="text/css">
 <link th:href="@{/css/ecubit-admin.min.css}" rel="stylesheet"
 	type="text/css">
+<link th:href="@{/css/mio.css}" rel="stylesheet" type="text/css">
 <link
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet">
@@ -123,19 +124,19 @@
 									<!-- End nav step form -->
 									<!-- Begin content step -->
 									<div class="row">
-										<div class="col-xl-12">
-											<div class="card-body">
-												<div class="progress mb-4">
-													<div
-														class="progress-bar progress-md progress-bar-striped progress-bar-animated bg-info"
-														role="progressbar" aria-valuenow="1" aria-valuemin="1"
-														aria-valuemax="5" style="width: 30%;">Step 1 of 3</div>
-												</div>
-												<div class="tab-content">
-													<!-- Begin step 1 anagrafica paziente -->
-													<div class="tab-pane active" id="AnagraficaPaziente">
-														<form th:action="@{/patients}" th:object="${patient}"
-															method="post">
+										<form th:action="@{/patients}" th:object="${patient}"
+											method="post">
+											<div class="col-xl-12">
+												<div class="card-body">
+													<div class="progress mb-4">
+														<div
+															class="progress-bar progress-md progress-bar-striped progress-bar-animated bg-info"
+															role="progressbar" aria-valuenow="1" aria-valuemin="1"
+															aria-valuemax="5" style="width: 30%;">Step 1 of 3</div>
+													</div>
+													<div class="tab-content">
+														<!-- Begin step 1 anagrafica paziente -->
+														<div class="tab-pane active" id="AnagraficaPaziente">
 															<p class="text-danger"
 																th:if="${#fields.hasGlobalErrors()}"
 																th:each="error : ${#fields.errors('global')}"
@@ -214,8 +215,8 @@
 																<div class="form-group col-md-3">
 																	<label for="DOB">Data di nascita</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{birthDateString}" class="form-control"
-																			type="text" id="datepicker"
+																		<input th:field="*{birthDateString}"
+																			class="form-control" type="text" id="datepicker"
 																			placeholder="gg / mm / aaaa" aria-label="DOB"
 																			required>
 																		<div class="input-group-append">
@@ -225,14 +226,14 @@
 																		</div>
 																	</div>
 																	<p class="text-danger"
-																		th:each="error: ${#fields.errors('birthDate')}"
+																		th:each="error: ${#fields.errors('birthDateString')}"
 																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-3">
 																	<label for="inputCodFiscale">Codice Fiscale</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{fiscalCode}" class="form-control" type="text"
-																			id="inputCodFiscale"
+																		<input th:field="*{fiscalCode}" class="form-control"
+																			type="text" id="inputCodFiscale"
 																			placeholder="Inserisci CodiceFiscale"
 																			aria-label="inputCodFiscale">
 																		<div class="input-group-append">
@@ -248,8 +249,8 @@
 																<div class="form-group col-md-3">
 																	<label for="LuogoDiNascita">Luogo Di Nascita</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{birthPlace}" class="form-control" type="text"
-																			id="inputLuogoDiNascita"
+																		<input th:field="*{birthPlace}" class="form-control"
+																			type="text" id="inputLuogoDiNascita"
 																			placeholder="Comune di nascita"
 																			aria-label="comuneDiNascita">
 																		<div class="input-group-append">
@@ -263,12 +264,15 @@
 																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-3">
-																	<label for="ProvinciaDiNascita">Provincia di nascita</label> 
-																		<select th:field="*{birthProvince}" 
-																		id="ProvinciaDiNascita" class="form-control custom-select">
-																		<option selected th:value="''">Seleziona la Provincia</option>
-																		<option  th:each="provincia: ${province}" th:value="${provincia.code}"
-																		 th:text="${provincia.code}"/>
+																	<label for="ProvinciaDiNascita">Provincia di
+																		nascita</label> <select th:field="*{birthProvince}"
+																		id="ProvinciaDiNascita"
+																		class="form-control custom-select">
+																		<option selected th:value="''">Seleziona la
+																			Provincia</option>
+																		<option th:each="provincia: ${province}"
+																			th:value="${provincia.code}"
+																			th:text="${provincia.code}" />
 																	</select>
 																	<p class="text-danger"
 																		th:each="error: ${#fields.errors('birthProvince')}"
@@ -277,8 +281,9 @@
 																<div class="form-group col-md-3">
 																	<label for="Cittadinanza">Cittadinanza</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{nationality}" class="form-control" type="text"
-																			id="inputCittadinanza" placeholder="Inserisci Stato"
+																		<input th:field="*{nationality}" class="form-control"
+																			type="text" id="inputCittadinanza"
+																			placeholder="Inserisci Stato"
 																			aria-label="Cittadinanza">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
@@ -294,8 +299,8 @@
 																	<label for="IndirizzoResidenza">Indirizzo di
 																		Residenza</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{address}" class="form-control" type="text"
-																			id="inputIndirizzoResidenza"
+																		<input th:field="*{address}" class="form-control"
+																			type="text" id="inputIndirizzoResidenza"
 																			placeholder="Indirizzo di residenza"
 																			aria-label="IndirizzoResidenza">
 																		<div class="input-group-append">
@@ -312,8 +317,8 @@
 																	<label for="ComuneResidenza">Comune di
 																		Residenza</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{city}" class="form-control" type="text"
-																			id="inputComuneResidenza"
+																		<input th:field="*{city}" class="form-control"
+																			type="text" id="inputComuneResidenza"
 																			placeholder="Comune di residenza"
 																			aria-label="ComuneResidenza">
 																		<div class="input-group-append">
@@ -330,9 +335,11 @@
 																	<label for="ProvinciaResidenza">Provincia</label> <select
 																		th:field="*{province}" id="ProvinciaResidenza"
 																		class="form-control custom-select">
-																		<option selected th:value="''">Seleziona la Provincia</option>
-																		<option  th:each="provincia: ${province}" th:value="${provincia.code}"
-																		 th:text="${provincia.code}"/>
+																		<option selected th:value="''">Seleziona la
+																			Provincia</option>
+																		<option th:each="provincia: ${province}"
+																			th:value="${provincia.code}"
+																			th:text="${provincia.code}" />
 																	</select>
 																	<p class="text-danger"
 																		th:each="error: ${#fields.errors('province')}"
@@ -341,8 +348,8 @@
 																<div class="form-group col-md-3">
 																	<label for="StatoResidenza">Stato</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{country}" class="form-control" type="text"
-																			id="inputStatoResidenza"
+																		<input th:field="*{country}" class="form-control"
+																			type="text" id="inputStatoResidenza"
 																			placeholder="Inserisci Stato"
 																			aria-label="StatoResidenza">
 																		<div class="input-group-append">
@@ -359,8 +366,8 @@
 																	<label for="numeroTelefono">Numero di Telefono
 																		Fisso</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{fixedPhone}" class="form-control" type="number"
-																			id="inputnumeroTelefono"
+																		<input th:field="*{fixedPhone}" class="form-control"
+																			type="number" id="inputnumeroTelefono"
 																			placeholder="Inserisci Numero di telefono fisso"
 																			aria-label="numeroTelefono">
 																		<div class="input-group-append">
@@ -376,8 +383,8 @@
 																<div class="form-group col-md-3">
 																	<label for="numeroMobile">Numero di Cellulare</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{cellPhone}" class="form-control" type="number"
-																			id="inputnumeroMobile"
+																		<input th:field="*{cellPhone}" class="form-control"
+																			type="number" id="inputnumeroMobile"
 																			placeholder="Inserisci Numero di cellulare"
 																			aria-label="numeroMobile">
 																		<div class="input-group-append">
@@ -393,8 +400,9 @@
 																<div class="form-group col-md-1">
 																	<label for="inputAltezza">Altezza</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{height}" class="form-control" type="number" min="1"
-																			id="inputAltezza" placeholder="" aria-label="Altezza">
+																		<input th:field="*{height}" class="form-control"
+																			type="number" min="1" id="inputAltezza"
+																			placeholder="" aria-label="Altezza">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-arrows-alt-v"></i>
@@ -408,8 +416,9 @@
 																<div class="form-group col-md-1">
 																	<label for="inputPeso">Peso</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{weight}" class="form-control" type="number" min="1" 
-																			id="inputPeso" placeholder="" aria-label="inputPeso">
+																		<input th:field="*{weight}" class="form-control"
+																			type="number" min="1" id="inputPeso" placeholder=""
+																			aria-label="inputPeso">
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
 																				class="fas fa-weight"></i>
@@ -423,8 +432,8 @@
 																<div class="form-group col-md-4">
 																	<label for="MedicoBase">Medico di Base</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{clinicianFullName}" class="form-control" 
-																		    type="text" id="inputMedicoBase"
+																		<input th:field="*{clinicianFullName}"
+																			class="form-control" type="text" id="inputMedicoBase"
 																			placeholder="Inserisci medico di base"
 																			aria-label="MedicoBase">
 																		<div class="input-group-append">
@@ -438,13 +447,15 @@
 																		th:text="${error}">Validation error</p>
 																</div>
 																<div class="form-group col-md-4">
-																	<label for="assistenteSanitario">Assistente Sanitario</label> 
-																		<select id="assistenteSanitario" th:field="*{nurseId}"
+																	<label for="assistenteSanitario">Assistente
+																		Sanitario</label> <select id="assistenteSanitario"
+																		th:field="*{nurseId}"
 																		class="form-control custom-select">
-																		  <option th:value="''" selected>Seleziona Assistente Sanitario</option>
-																		 <option  th:each="user: ${users}" th:value="${user.id}"
-																		 th:text="${user.nome} + ' ' + ${user.cognome}"/>
-																	    </select>
+																		<option th:value="''" selected>Seleziona
+																			Assistente Sanitario</option>
+																		<option th:each="user: ${users}" th:value="${user.id}"
+																			th:text="${user.nome} + ' ' + ${user.cognome}" />
+																	</select>
 																	<p class="text-danger"
 																		th:each="error: ${#fields.errors('nurseId')}"
 																		th:text="${error}">Validation error</p>
@@ -458,8 +469,9 @@
 																<div class="form-group col-md-4">
 																	<label for="inputEmail">E-mail</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{email}" class="form-control" type="text"
-																			id="inputEmail" placeholder="Inserisci e-mail"
+																		<input th:field="*{email}" class="form-control"
+																			type="text" id="inputEmail"
+																			placeholder="Inserisci e-mail"
 																			aria-label="inputEmail" required>
 																		<div class="input-group-append">
 																			<span class="input-group-text"> <i
@@ -474,8 +486,8 @@
 																<div class="form-group col-md-4">
 																	<label for="inputPassword">Password</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{password}" class="form-control" 
-																		    type="password" id="pwd"
+																		<input th:field="*{password}" class="form-control"
+																			type="password" id="pwd"
 																			placeholder="Inserisci Password"
 																			aria-label="inputPassword" required>
 																		<div class="input-group-append">
@@ -511,7 +523,8 @@
 																	<label for="inputConfermaPassword">Conferma
 																		Password</label>
 																	<div class="input-group input-group-joined">
-																		<input th:field="*{confirmPassword}" class="form-control" type="password"
+																		<input th:field="*{confirmPassword}"
+																			class="form-control" type="password"
 																			id="inputConfermaPassword"
 																			placeholder="Conferma Password"
 																			aria-label="inputConfermaPassword" required>
@@ -533,693 +546,664 @@
 																<button type="reset"
 																	class="btn btn-primary btn-user text-uppercase">Reset</button>
 																<button type="submit"
-																	class="btn btn-primary btn-user text-uppercase">Salva
+																	class="btn btn-primary btn-user text-uppercase nextTab">Salva
 																	e continua</button>
 															</div>
-														</form>
-													</div>
-													<!-- End step 1 anagrafica paziente -->
-													<!-- Begin step 2 patologie paziente -->
-													<div class="tab-pane fade" id="PatologiePaziente">
-														<h6 class="m-0 font-weight-light ">Seleziona una o
-															più patologie</h6>
-														<hr class="sidebar-divider d-none d-md-block">
-														<div class="row">
-															<div class="col-2">
-																<div class="list-group" id="list-tab" role="tablist">
-																	<a
-																		class="list-group-item list-group-item-action active"
-																		id="list-patologia-list" data-toggle="list"
-																		href="#list-patologia" role="tab"
-																		aria-controls="patologia">Testa e collo</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia1-list" data-toggle="list"
-																		href="#list-patologia1" role="tab"
-																		aria-controls="patologia1">Occhi</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia2-list" data-toggle="list"
-																		href="#list-patologia2" role="tab"
-																		aria-controls="patologia2">Torace e cuore</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia3-list" data-toggle="list"
-																		href="#list-patologia3" role="tab"
-																		aria-controls="patologia3">Spalla</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia4-list" data-toggle="list"
-																		href="#list-patologia4" role="tab"
-																		aria-controls="patologia4">Addome</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia5-list" data-toggle="list"
-																		href="#list-patologia5" role="tab"
-																		aria-controls="patologia5">Braccia e mani</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia6-list" data-toggle="list"
-																		href="#list-patologia6" role="tab"
-																		aria-controls="patologia6">Zona pelvica</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia7-list" data-toggle="list"
-																		href="#list-patologia7" role="tab"
-																		aria-controls="patologia7">Gambe</a> <a
-																		class="list-group-item list-group-item-action"
-																		id="list-patologia8-list" data-toggle="list"
-																		href="#list-patologia8" role="tab"
-																		aria-controls="patologia8">Piedi</a>
-																</div>
-															</div>
-															<div class="col-10">
-																<div class="tab-content" id="nav-tabContent">
-																	<!-- Patologia 1-->
-																	<div class="tab-pane fade show active"
-																		id="list-patologia" role="tabpanel"
-																		aria-labelledby="list-patologia-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Testa e collo</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							 <option  th:each="pathology: ${pathologiesTestaECollo}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>							
-																						</select>
-																					</div>
-																				</div>
-																			</div>
 
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 2 -->
-																	<div class="tab-pane fade" id="list-patologia1"
-																		role="tabpanel" aria-labelledby="list-patologia1-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Occhi</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							 <option  th:each="pathology: ${pathologiesOcchi}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 2-->
-																	<div class="tab-pane fade" id="list-patologia2"
-																		role="tabpanel" aria-labelledby="list-patologia2-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Torace e cuore</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesToraceECuore}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 3-->
-																	<div class="tab-pane fade" id="list-patologia3"
-																		role="tabpanel" aria-labelledby="list-patologia3-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Spalla</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesSpalla}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 4 -->
-																	<div class="tab-pane fade" id="list-patologia4"
-																		role="tabpanel" aria-labelledby="list-patologia4-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Addome</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesAddome}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 5 -->
-																	<div class="tab-pane fade" id="list-patologia5"
-																		role="tabpanel" aria-labelledby="list-patologia5-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Braccia e mani</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesBracciaEMani}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 6 -->
-																	<div class="tab-pane fade" id="list-patologia6"
-																		role="tabpanel" aria-labelledby="list-patologia6-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Zona Pelvica</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesZonaPelvica}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 7 -->
-																	<div class="tab-pane fade" id="list-patologia7"
-																		role="tabpanel" aria-labelledby="list-patologia7-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Gambe</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesGambe}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<!-- patologia 8 -->
-																	<div class="tab-pane fade" id="list-patologia8"
-																		role="tabpanel" aria-labelledby="list-patologia8-list">
-																		<div class="row addremove-multiselect">
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Lista
-																						Patologie disponibili Piedi</div>
-																					<div class="panel-body">
-																						<select id="available-select"
-																							class="multiselect available form-control"
-																							size="17" multiple="multiple">
-																							<option  th:each="pathology: ${pathologiesPiedi}" th:value="${pathology.id}"
-						                                                                       th:text="${pathology.nome}"/>
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-
-																			<div
-																				class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
-																				<button type="button" id="rightall"
-																					class="rightall btn btn-info btn-block">
-																					<i class="fas fa-angle-double-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="right"
-																					class="right btn btn-info btn-block">
-																					<i class="fas fa-caret-right fa-1x"></i>
-																				</button>
-																				<button type="button" id="left"
-																					class="left btn btn-google btn-block">
-																					<i class="fas fa-caret-left fa-1x"></i>
-																				</button>
-																				<button type="button" id="leftall"
-																					class="leftall btn btn-google btn-block">
-																					<i class="fas fa-angle-double-left fa-1x"></i>
-																				</button>
-																			</div>
-
-																			<div class="col-lg-5 col-sm-5 col-xs-12">
-																				<div class="panel panel-default">
-																					<div class="panel-heading mb-2">Patologie
-																						selezionate</div>
-																					<div class="panel-body">
-																						<select id="selected-select"
-																							class="multiselect selected form-control"
-																							size="17" multiple="multiple">
-																						</select>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
+														</div>
+														<!-- End step 1 anagrafica paziente -->
+														<!-- Begin step 2 patologie paziente -->
+														<div class="tab-pane fade" id="PatologiePaziente">
+															<h6 class="m-0 font-weight-light ">Seleziona una o
+																più patologie</h6>
+															<hr class="sidebar-divider d-none d-md-block">
+															<div class="row">
+																<div class="col-2">
+																	<div class="list-group" id="list-tab" role="tablist">
+																		<a
+																			class="list-group-item list-group-item-action active"
+																			id="list-patologia-list" data-toggle="list"
+																			href="#list-patologia" role="tab"
+																			aria-controls="patologia">Testa e collo</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia1-list" data-toggle="list"
+																			href="#list-patologia1" role="tab"
+																			aria-controls="patologia1">Occhi</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia2-list" data-toggle="list"
+																			href="#list-patologia2" role="tab"
+																			aria-controls="patologia2">Torace e cuore</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia3-list" data-toggle="list"
+																			href="#list-patologia3" role="tab"
+																			aria-controls="patologia3">Spalla</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia4-list" data-toggle="list"
+																			href="#list-patologia4" role="tab"
+																			aria-controls="patologia4">Addome</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia5-list" data-toggle="list"
+																			href="#list-patologia5" role="tab"
+																			aria-controls="patologia5">Braccia e mani</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia6-list" data-toggle="list"
+																			href="#list-patologia6" role="tab"
+																			aria-controls="patologia6">Zona pelvica</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia7-list" data-toggle="list"
+																			href="#list-patologia7" role="tab"
+																			aria-controls="patologia7">Gambe</a> <a
+																			class="list-group-item list-group-item-action"
+																			id="list-patologia8-list" data-toggle="list"
+																			href="#list-patologia8" role="tab"
+																			aria-controls="patologia8">Piedi</a>
 																	</div>
 																</div>
+																<div class="col-10">
+																	<div class="tab-content" id="nav-tabContent">
+																		<!-- Patologia 1-->
+																		<div class="tab-pane fade show active"
+																			id="list-patologia" role="tabpanel"
+																			aria-labelledby="list-patologia-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Testa e collo</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesTestaECollo}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 2 -->
+																		<div class="tab-pane fade" id="list-patologia1"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia1-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Occhi</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option th:each="pathology: ${pathologiesOcchi}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 2-->
+																		<div class="tab-pane fade" id="list-patologia2"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia2-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Torace e cuore</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesToraceECuore}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 3-->
+																		<div class="tab-pane fade" id="list-patologia3"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia3-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Spalla</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesSpalla}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 4 -->
+																		<div class="tab-pane fade" id="list-patologia4"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia4-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Addome</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesAddome}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 5 -->
+																		<div class="tab-pane fade" id="list-patologia5"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia5-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Braccia e mani</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesBracciaEMani}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 6 -->
+																		<div class="tab-pane fade" id="list-patologia6"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia6-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Zona Pelvica</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesZonaPelvica}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 7 -->
+																		<div class="tab-pane fade" id="list-patologia7"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia7-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Gambe</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option th:each="pathology: ${pathologiesGambe}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<!-- patologia 8 -->
+																		<div class="tab-pane fade" id="list-patologia8"
+																			role="tabpanel"
+																			aria-labelledby="list-patologia8-list">
+																			<div class="row addremove-multiselect">
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Lista
+																							Patologie disponibili Piedi</div>
+																						<div class="panel-body">
+																							<select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option th:each="pathology: ${pathologiesPiedi}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+
+																				<div
+																					class="multiselect-controls col-lg-2 col-sm-2 col-xs-12 mt-lg-4">
+																					<button type="button" id="rightall"
+																						class="rightall btn btn-info btn-block">
+																						<i class="fas fa-angle-double-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="right"
+																						class="right btn btn-info btn-block">
+																						<i class="fas fa-caret-right fa-1x"></i>
+																					</button>
+																					<button type="button" id="left"
+																						class="left btn btn-google btn-block">
+																						<i class="fas fa-caret-left fa-1x"></i>
+																					</button>
+																					<button type="button" id="leftall"
+																						class="leftall btn btn-google btn-block">
+																						<i class="fas fa-angle-double-left fa-1x"></i>
+																					</button>
+																				</div>
+
+																				<div class="col-lg-5 col-sm-5 col-xs-12">
+																					<div class="panel panel-default">
+																						<div class="panel-heading mb-2">Patologie
+																							selezionate</div>
+																						<div class="panel-body">
+																							<select id="selected-select"
+																								th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																							</select>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<hr class="sidebar-divider d-none d-md-block">
+															<div class="text-center">
+																<button type="submit"
+																	class="btn btn-secondary btn-user text-uppercase prevTab">
+																	<i class="fas fa-chevron-left"></i> Back
+																</button>
+																<button type="reset"
+																	class="btn btn-primary btn-user text-uppercase">Reset</button>
+																<button type="submit"
+																	class="btn btn-primary btn-user text-uppercase nextTab">Salva
+																	e continua</button>
 															</div>
 														</div>
-														<hr class="sidebar-divider d-none d-md-block">
-														<div class="text-center">
-															<button type="submit"
-																class="btn btn-secondary btn-user text-uppercase prevTab">
-																<i class="fas fa-chevron-left"></i> Back
-															</button>
-															<button type="reset"
-																class="btn btn-primary btn-user text-uppercase">Reset</button>
-															<button type="submit"
-																class="btn btn-primary btn-user text-uppercase nextTab">Salva
-																e continua</button>
+														<!-- End step 2 patologie paziente -->
+														<!-- Begin step 3 Associa device -->
+														<div class="tab-pane fade" id="AssociaDispositivi">
+															<h6 class="m-0 font-weight-light ">Lista dispositivi
+																disponibili (in questa table verranno visualizzati solo
+																device disponibili)</h6>
+															<hr class="sidebar-divider d-none d-md-block">
+															<div class="table-responsive">
+																<table class="table table-bordered" id="dataTable"
+																	width="100%" cellspacing="0">
+																	<thead class="thead-dark">
+																		<tr>
+																			<th scope="col">Numero Seriale</th>
+																			<th scope="col">Marca</th>
+																			<th scope="col">Modello</th>
+																			<th scope="col">Tipologia</th>
+																			<th scope="col">MAC Address</th>
+																			<th scope="col">Data Assegnazione</th>
+																			<th scope="col">Termine Assegnazione</th>
+																			<th scope="col">Action</th>
+																		</tr>
+																	</thead>
+																	<tfoot class="thead-dark">
+																		<tr>
+																			<th scope="col">Numero Seriale</th>
+																			<th scope="col">Marca</th>
+																			<th scope="col">Modello</th>
+																			<th scope="col">Tipologia</th>
+																			<th scope="col">MAC Address</th>
+																			<th scope="col">Data Assegnazione</th>
+																			<th scope="col">Termine Assegnazione</th>
+																			<th scope="col">Action</th>
+																		</tr>
+																	</tfoot>
+																	<tbody>
+																		<tr th:each="device, stat : ${devices}">
+																			<td th:id="${device.id}" scope="row"><input
+																				type="hidden"
+																				th:attr="name='devices[' + ${stat.index} + '].id'"
+																				th:value="${devices[__${stat.index}__].id}" /><span
+																				th:text="${device.numeroSeriale}">Numero
+																					Seriale</span></td>
+																			<td><span th:text="${device.marca}">#</span></td>
+																			<td><span th:text="${device.modello}">#</span></td>
+																			<td><span th:text="${device.tipologia.tipo}">#</span></td>
+																			<td><span th:text="${device.btMacAddress}">#</span></td>
+																			<td><span th:text="${device.dataAssegnazione}">#</span></td>
+																			<td th:class="termineAssegnazione"><span
+																				th:text="${device.termineAssegnazione}">#</span></td>
+																			<td th:class="action"><a href="#my_modal"
+																				th:attr="data-id=''+${device.id}, data-sequence=''+${stat.index}"
+																				class="btn-sm btn-info btn-circle btn-icon pairModal"
+																				data-toggle="modal"
+																				data-target="#AssociaDeviceModal"><i
+																					class="fas fa-exchange-alt" data-toggle="tooltip"
+																					data-placement="top" title=""
+																					data-original-title="Associa Sensore"></i></a></td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+															<hr class="sidebar-divider d-none d-md-block">
+															<div class="text-center">
+																<button type="submit"
+																	class="btn btn-secondary btn-user text-uppercase prevTab">
+																	<i class="fas fa-chevron-left"></i> Back
+																</button>
+																<button type="submit"
+																	class="btn btn-primary btn-user text-uppercase">Completa
+																	la registrazione</button>
+															</div>
 														</div>
+														<!-- End step 3 Associa device -->
 													</div>
-													<!-- End step 2 patologie paziente -->
-													<!-- Begin step 3 Associa device -->
-													<div class="tab-pane fade" id="AssociaDispositivi">
-														<h6 class="m-0 font-weight-light ">Lista dispositivi
-															disponibili (in questa table verranno visualizzati solo
-															device disponibili)</h6>
-														<hr class="sidebar-divider d-none d-md-block">
-														<div class="table-responsive">
-															<table class="table table-bordered" id="dataTable"
-																width="100%" cellspacing="0">
-																<thead class="thead-dark">
-																	<tr>
-																		<th scope="col">Numero Seriale</th>
-																		<th scope="col">Marca</th>
-																		<th scope="col">Modello</th>
-																		<th scope="col">Tipologia</th>
-																		<th scope="col">MAC Address</th>
-																		<th scope="col">Data Assegnazione</th>
-																		<th scope="col">Termine Assegnazione</th>
-																		<th scope="col">Action</th>
-																	</tr>
-																</thead>
-																<tfoot class="thead-dark">
-																	<tr>
-																		<th scope="col">Numero Seriale</th>
-																		<th scope="col">Marca</th>
-																		<th scope="col">Modello</th>
-																		<th scope="col">Tipologia</th>
-																		<th scope="col">MAC Address</th>
-																		<th scope="col">Data Assegnazione</th>
-																		<th scope="col">Termine Assegnazione</th>
-																		<th scope="col">Action</th>
-																	</tr>
-																</tfoot>
-																<tbody>
-																	<tr>
-																		<td scope="row">IDFGERT45</td>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>modello sensore</td>
-																		<td>tipologia sensore</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td>19/04/2021</td>
-																		<td>19/12/2021</td>
-																		<td><span
-																			class="btn-sm btn-primary btn-circle btn-icon"><i
-																				class="fas fa-check" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Sensore Associato"></i></span> <a
-																			href="#"
-																			class="btn-sm btn-google btn-circle btn-icon"
-																			data-toggle="modal" data-target="#unpairModal"><i
-																				class="fas fa-times" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Unpair Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>modello sensore</td>
-																		<td>tipologia sensore</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td>19/04/2021</td>
-																		<td>19/12/2021</td>
-																		<td><span
-																			class="btn-sm btn-primary btn-circle btn-icon"><i
-																				class="fas fa-check" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Sensore Associato"></i></span> <a
-																			href="#"
-																			class="btn-sm btn-google btn-circle btn-icon"
-																			data-toggle="modal" data-target="#unpairModal"><i
-																				class="fas fa-times" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Unpair Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>modello sensore</td>
-																		<td>tipologia sensore</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td>--</td>
-																		<td>--</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>modello sensore</td>
-																		<td>tipologia sensore</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td>--</td>
-																		<td>--</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																	<tr>
-																		<th scope="row">IDFGERT45</th>
-																		<td>Huawei Watch GT 2 Pro</td>
-																		<td>modello sensore</td>
-																		<td>tipologia sensore</td>
-																		<td>QWERTY-234-VAER</td>
-																		<td>--</td>
-																		<td>--</td>
-																		<td><a href="#"
-																			class="btn-sm btn-info btn-circle btn-icon"
-																			data-toggle="modal" data-target="#AssociaDeviceModal"><i
-																				class="fas fa-exchange-alt" data-toggle="tooltip"
-																				data-placement="top" title=""
-																				data-original-title="Associa Sensore"></i></a></td>
-																	</tr>
-																</tbody>
-															</table>
-														</div>
-														<hr class="sidebar-divider d-none d-md-block">
-														<div class="text-center">
-															<button type="submit"
-																class="btn btn-secondary btn-user text-uppercase prevTab">
-																<i class="fas fa-chevron-left"></i> Back
-															</button>
-															<button type="submit"
-																class="btn btn-primary btn-user text-uppercase">Completa
-																la registrazione</button>
-														</div>
-													</div>
-													<!-- End step 3 Associa device -->
 												</div>
 											</div>
-										</div>
+										</form>
 									</div>
 									<!-- End content step -->
 
@@ -1283,12 +1267,17 @@
 						<span aria-hidden="true">×</span>
 					</button>
 				</div>
-				<div class="modal-body">Sei sicuro di voler unpair il device
-					Apple Watch?</div>
+				<div class="modal-body">
+					<input type="hidden" name="idDispositivoUnpair"
+						id="idDispositivoUnpair" value="" /> <input type="hidden"
+						name="sequenceUnpair" id="sequenceUnpair" value="" /> Sei sicuro
+					di voler unpair il device Apple Watch?
+				</div>
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Cancella</button>
-					<a class="btn btn-primary" href="#" data-dismiss="modal">Unpair</a>
+					<a th:onclick="unpair()" class="btn btn-primary" href="#"
+						data-dismiss="modal">Unpair</a>
 				</div>
 			</div>
 		</div>
@@ -1329,8 +1318,11 @@
 							<div class="form-group col-md-6">
 								<label for="date3">Termine Assegnazione</label>
 								<div class="input-group input-group-joined">
-									<input class="date form-control" id="date3" type="text"
-										placeholder="YYYY/MM/DD" />
+									<input class="form-control" id="modaldatepicker" type="text"
+										placeholder="YYYY/MM/DD" /> <input type="hidden"
+										name="idDispositivo" id="idDispositivo" value="" /> <input
+										type="hidden" name="sequence" id="sequence" value="" />
+
 								</div>
 							</div>
 						</div>
@@ -1340,7 +1332,7 @@
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Close</button>
-					<a class="btn btn-primary" data-dismiss="modal">Associa</a>
+					<a th:onclick="pair()" class="btn btn-primary" data-dismiss="modal">Associa</a>
 				</div>
 			</div>
 		</div>
