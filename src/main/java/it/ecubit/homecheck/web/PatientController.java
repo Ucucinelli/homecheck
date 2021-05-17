@@ -16,12 +16,12 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import it.ecubit.homecheck.UserProperties;
 import it.ecubit.pse.api.dtos.HomeCheckPatientUserDTO;
 import it.ecubit.pse.api.exceptions.InvalidParameterFormatException;
@@ -31,7 +31,6 @@ import it.ecubit.pse.api.interfaces.HidaPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.LncPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.SalusPatientServiceInterface;
 import it.ecubit.pse.api.services.DeviceService;
-import it.ecubit.pse.api.services.DeviceTypeService;
 import it.ecubit.pse.api.services.HCPathologyService;
 import it.ecubit.pse.api.services.ProvinceService;
 import it.ecubit.pse.api.services.UserService;
@@ -133,6 +132,30 @@ public class PatientController {
 		return "new-paziente";
 	}
 	
+	@RequestMapping(path = "/remove/{id}")
+	public String removeById(@PathVariable("id") String patientIdentifier, Model model) throws PSEServiceException {
+		List<Device> devicesAssignedToPatient =  deviceService.findByPatientId(patientIdentifier);
+		for(Device device : devicesAssignedToPatient) {
+			deviceService.revokeDeviceAssignmentToPatient(device.getId(), patientIdentifier);
+		}
+		if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+			aslVtPatientService.deleteById(patientIdentifier);
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+			hidaPatientService.deleteById(patientIdentifier);
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+			lncPatientService.deleteById(patientIdentifier);
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+			salusPatientService.deleteById(patientIdentifier);
+		}
+		else {
+			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
+		}
+		return this.getAllAsList(model);
+	}
+	
 	
 	@GetMapping(path = "list")
 	public String getAllAsList(Model model) throws PSEServiceException {
@@ -161,6 +184,10 @@ public class PatientController {
 	public String getById(@PathVariable("id") String patientIdentifier, Model model) throws PSEServiceException {
 		PSEUser user = userService.getById(patientIdentifier);
 		HomeCheckPatient patient;
+		List <Device> devicesUnassigned = deviceService.findAllUnassigned();
+		List <Device> devices = deviceService.findByPatientId(patientIdentifier);
+		devices.addAll(devicesUnassigned);
+		model.addAttribute("devices", devices);
 		if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
 			patient = aslVtPatientService.getById(patientIdentifier);
 		}
@@ -176,6 +203,89 @@ public class PatientController {
 		else {
 			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
 		}
+		List<HCPathology> pathologiesTestaECollo = new ArrayList<>();
+		List<HCPathology> pathologiesTestaEColloSelected = new ArrayList<>();
+		List<HCPathology> pathologiesOcchi = new ArrayList<>();
+		List<HCPathology> pathologiesOcchiSelected = new ArrayList<>();
+		List<HCPathology> pathologiesToraceECuore = new ArrayList<>();
+		List<HCPathology> pathologiesToraceECuoreSelected = new ArrayList<>();
+		List<HCPathology> pathologiesSpalla = new ArrayList<>();
+		List<HCPathology> pathologiesSpallaSelected = new ArrayList<>();
+		List<HCPathology> pathologiesAddome = new ArrayList<>();
+		List<HCPathology> pathologiesAddomeSelected = new ArrayList<>();
+		List<HCPathology> pathologiesBracciaEMani = new ArrayList<>();
+		List<HCPathology> pathologiesBracciaEManiSelected = new ArrayList<>();
+		List<HCPathology> pathologiesZonaPelvica = new ArrayList<>();
+		List<HCPathology> pathologiesZonaPelvicaSelected = new ArrayList<>();
+		List<HCPathology> pathologiesGambe = new ArrayList<>();
+		List<HCPathology> pathologiesGambeSelected = new ArrayList<>();
+		List<HCPathology> pathologiesPiedi = new ArrayList<>();
+		List<HCPathology> pathologiesPiediSelected = new ArrayList<>();
+		List<HCPathology> pathologiesGenerico = new ArrayList<>();
+		List<HCPathology> pathologiesGenericoSelected = new ArrayList<>();
+        for (HCPathology pathology: patient.getPatologie()) {
+        	if (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TESTA_E_COLLO.toString()))
+        	    pathologiesTestaEColloSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.OCCHI.toString()))
+        		pathologiesOcchiSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TORACE_E_CUORE.toString()))
+    		    pathologiesToraceECuoreSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.SPALLA.toString()))
+    		    pathologiesSpallaSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ADDOME.toString()))
+    		    pathologiesAddomeSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.BRACCIA_E_MANI.toString()))
+    		    pathologiesBracciaEManiSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ZONA_PELVICA.toString()))
+    		    pathologiesZonaPelvicaSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GAMBE.toString()))
+    		    pathologiesGambeSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.PIEDI.toString()))
+    		    pathologiesPiediSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GENERICO.toString()))
+    		    pathologiesGenericoSelected.add(pathology);  	    			
+        }
+        pathologiesTestaECollo = hcPathologyService.getByScope(HCPathology.PathologyScope.TESTA_E_COLLO.toString());
+        pathologiesTestaECollo.removeAll(pathologiesTestaEColloSelected);
+        pathologiesOcchi = hcPathologyService.getByScope(HCPathology.PathologyScope.OCCHI.toString());
+        pathologiesOcchi.removeAll(pathologiesOcchiSelected);
+        pathologiesToraceECuore = hcPathologyService.getByScope(HCPathology.PathologyScope.TORACE_E_CUORE.toString());
+        pathologiesToraceECuore.removeAll(pathologiesToraceECuoreSelected);
+        pathologiesSpalla = hcPathologyService.getByScope(HCPathology.PathologyScope.SPALLA.toString());
+        pathologiesSpalla.removeAll(pathologiesSpallaSelected);
+        pathologiesAddome = hcPathologyService.getByScope(HCPathology.PathologyScope.ADDOME.toString());
+        pathologiesAddome.removeAll(pathologiesAddomeSelected);
+        pathologiesBracciaEMani = hcPathologyService.getByScope(HCPathology.PathologyScope.BRACCIA_E_MANI.toString());
+        pathologiesBracciaEMani.removeAll(pathologiesBracciaEManiSelected);
+        pathologiesZonaPelvica = hcPathologyService.getByScope(HCPathology.PathologyScope.ZONA_PELVICA.toString());
+        pathologiesZonaPelvica.removeAll(pathologiesZonaPelvicaSelected);
+        pathologiesGambe = hcPathologyService.getByScope(HCPathology.PathologyScope.GAMBE.toString());
+        pathologiesGambe.removeAll(pathologiesGambeSelected);
+        pathologiesPiedi = hcPathologyService.getByScope(HCPathology.PathologyScope.PIEDI.toString());
+        pathologiesPiedi.removeAll(pathologiesPiediSelected);
+        pathologiesGenerico = hcPathologyService.getByScope(HCPathology.PathologyScope.GENERICO.toString());
+        pathologiesGenerico.removeAll(pathologiesGenericoSelected);
+        model.addAttribute("pathologiesTestaECollo", pathologiesTestaECollo);
+		model.addAttribute("pathologiesOcchi", pathologiesOcchi);
+		model.addAttribute("pathologiesToraceECuore", pathologiesToraceECuore);
+		model.addAttribute("pathologiesSpalla", pathologiesSpalla);
+		model.addAttribute("pathologiesAddome", pathologiesAddome);
+		model.addAttribute("pathologiesBracciaEMani", pathologiesBracciaEMani);
+		model.addAttribute("pathologiesZonaPelvica", pathologiesZonaPelvica);
+		model.addAttribute("pathologiesGambe", pathologiesGambe);
+		model.addAttribute("pathologiesPiedi", pathologiesPiedi);
+		model.addAttribute("pathologiesGenerico", pathologiesGenerico);
+        model.addAttribute("pathologiesTestaEColloSelected", pathologiesTestaEColloSelected);
+		model.addAttribute("pathologiesOcchiSelected", pathologiesOcchiSelected);
+		model.addAttribute("pathologiesToraceECuoreSelected", pathologiesToraceECuoreSelected);
+		model.addAttribute("pathologiesSpallaSelected", pathologiesSpallaSelected);
+		model.addAttribute("pathologiesAddomeSelected", pathologiesAddomeSelected);
+		model.addAttribute("pathologiesBracciaEManiSelected", pathologiesBracciaEManiSelected);
+		model.addAttribute("pathologiesZonaPelvicaSelected", pathologiesZonaPelvicaSelected);
+		model.addAttribute("pathologiesGambeSelected", pathologiesGambeSelected);
+		model.addAttribute("pathologiesPiediSelected", pathologiesPiediSelected);
+		model.addAttribute("pathologiesGenericoSelected", pathologiesGenericoSelected);
+		
 		HomeCheckPatientUserDTO patientDTO = new HomeCheckPatientUserDTO(patient, user);
 		if (patientDTO.getBirthDate() != null) {
 		   String birthDateString = patientDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -187,6 +297,126 @@ public class PatientController {
 		model.addAttribute("province", province);
 		model.addAttribute("users", users);
 		return "scheda-paziente";
+	}
+	
+	
+	@GetMapping(path = "/{id}/ConfigurazioneSensori")
+	public String getConfigurazioneById(@PathVariable("id") String patientIdentifier, Model model) throws PSEServiceException {
+		PSEUser user = userService.getById(patientIdentifier);
+		HomeCheckPatient patient;
+		List <Device> devicesUnassigned = deviceService.findAllUnassigned();
+		List <Device> devices = deviceService.findByPatientId(patientIdentifier);
+		devices.addAll(devicesUnassigned);
+		model.addAttribute("devices", devices);
+		if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+			patient = aslVtPatientService.getById(patientIdentifier);
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+			patient = hidaPatientService.getById(patientIdentifier);				
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+			patient = lncPatientService.getById(patientIdentifier);			
+		}
+		else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+			patient = salusPatientService.getById(patientIdentifier);			
+		}
+		else {
+			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
+		}
+		List<HCPathology> pathologiesTestaECollo = new ArrayList<>();
+		List<HCPathology> pathologiesTestaEColloSelected = new ArrayList<>();
+		List<HCPathology> pathologiesOcchi = new ArrayList<>();
+		List<HCPathology> pathologiesOcchiSelected = new ArrayList<>();
+		List<HCPathology> pathologiesToraceECuore = new ArrayList<>();
+		List<HCPathology> pathologiesToraceECuoreSelected = new ArrayList<>();
+		List<HCPathology> pathologiesSpalla = new ArrayList<>();
+		List<HCPathology> pathologiesSpallaSelected = new ArrayList<>();
+		List<HCPathology> pathologiesAddome = new ArrayList<>();
+		List<HCPathology> pathologiesAddomeSelected = new ArrayList<>();
+		List<HCPathology> pathologiesBracciaEMani = new ArrayList<>();
+		List<HCPathology> pathologiesBracciaEManiSelected = new ArrayList<>();
+		List<HCPathology> pathologiesZonaPelvica = new ArrayList<>();
+		List<HCPathology> pathologiesZonaPelvicaSelected = new ArrayList<>();
+		List<HCPathology> pathologiesGambe = new ArrayList<>();
+		List<HCPathology> pathologiesGambeSelected = new ArrayList<>();
+		List<HCPathology> pathologiesPiedi = new ArrayList<>();
+		List<HCPathology> pathologiesPiediSelected = new ArrayList<>();
+		List<HCPathology> pathologiesGenerico = new ArrayList<>();
+		List<HCPathology> pathologiesGenericoSelected = new ArrayList<>();
+        for (HCPathology pathology: patient.getPatologie()) {
+        	if (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TESTA_E_COLLO.toString()))
+        	    pathologiesTestaEColloSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.OCCHI.toString()))
+        		pathologiesOcchiSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TORACE_E_CUORE.toString()))
+    		    pathologiesToraceECuoreSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.SPALLA.toString()))
+    		    pathologiesSpallaSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ADDOME.toString()))
+    		    pathologiesAddomeSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.BRACCIA_E_MANI.toString()))
+    		    pathologiesBracciaEManiSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ZONA_PELVICA.toString()))
+    		    pathologiesZonaPelvicaSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GAMBE.toString()))
+    		    pathologiesGambeSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.PIEDI.toString()))
+    		    pathologiesPiediSelected.add(pathology);
+        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GENERICO.toString()))
+    		    pathologiesGenericoSelected.add(pathology);  	    			
+        }
+        pathologiesTestaECollo = hcPathologyService.getByScope(HCPathology.PathologyScope.TESTA_E_COLLO.toString());
+        pathologiesTestaECollo.removeAll(pathologiesTestaEColloSelected);
+        pathologiesOcchi = hcPathologyService.getByScope(HCPathology.PathologyScope.OCCHI.toString());
+        pathologiesOcchi.removeAll(pathologiesOcchiSelected);
+        pathologiesToraceECuore = hcPathologyService.getByScope(HCPathology.PathologyScope.TORACE_E_CUORE.toString());
+        pathologiesToraceECuore.removeAll(pathologiesToraceECuoreSelected);
+        pathologiesSpalla = hcPathologyService.getByScope(HCPathology.PathologyScope.SPALLA.toString());
+        pathologiesSpalla.removeAll(pathologiesSpallaSelected);
+        pathologiesAddome = hcPathologyService.getByScope(HCPathology.PathologyScope.ADDOME.toString());
+        pathologiesAddome.removeAll(pathologiesAddomeSelected);
+        pathologiesBracciaEMani = hcPathologyService.getByScope(HCPathology.PathologyScope.BRACCIA_E_MANI.toString());
+        pathologiesBracciaEMani.removeAll(pathologiesBracciaEManiSelected);
+        pathologiesZonaPelvica = hcPathologyService.getByScope(HCPathology.PathologyScope.ZONA_PELVICA.toString());
+        pathologiesZonaPelvica.removeAll(pathologiesZonaPelvicaSelected);
+        pathologiesGambe = hcPathologyService.getByScope(HCPathology.PathologyScope.GAMBE.toString());
+        pathologiesGambe.removeAll(pathologiesGambeSelected);
+        pathologiesPiedi = hcPathologyService.getByScope(HCPathology.PathologyScope.PIEDI.toString());
+        pathologiesPiedi.removeAll(pathologiesPiediSelected);
+        pathologiesGenerico = hcPathologyService.getByScope(HCPathology.PathologyScope.GENERICO.toString());
+        pathologiesGenerico.removeAll(pathologiesGenericoSelected);
+        model.addAttribute("pathologiesTestaECollo", pathologiesTestaECollo);
+		model.addAttribute("pathologiesOcchi", pathologiesOcchi);
+		model.addAttribute("pathologiesToraceECuore", pathologiesToraceECuore);
+		model.addAttribute("pathologiesSpalla", pathologiesSpalla);
+		model.addAttribute("pathologiesAddome", pathologiesAddome);
+		model.addAttribute("pathologiesBracciaEMani", pathologiesBracciaEMani);
+		model.addAttribute("pathologiesZonaPelvica", pathologiesZonaPelvica);
+		model.addAttribute("pathologiesGambe", pathologiesGambe);
+		model.addAttribute("pathologiesPiedi", pathologiesPiedi);
+		model.addAttribute("pathologiesGenerico", pathologiesGenerico);
+        model.addAttribute("pathologiesTestaEColloSelected", pathologiesTestaEColloSelected);
+		model.addAttribute("pathologiesOcchiSelected", pathologiesOcchiSelected);
+		model.addAttribute("pathologiesToraceECuoreSelected", pathologiesToraceECuoreSelected);
+		model.addAttribute("pathologiesSpallaSelected", pathologiesSpallaSelected);
+		model.addAttribute("pathologiesAddomeSelected", pathologiesAddomeSelected);
+		model.addAttribute("pathologiesBracciaEManiSelected", pathologiesBracciaEManiSelected);
+		model.addAttribute("pathologiesZonaPelvicaSelected", pathologiesZonaPelvicaSelected);
+		model.addAttribute("pathologiesGambeSelected", pathologiesGambeSelected);
+		model.addAttribute("pathologiesPiediSelected", pathologiesPiediSelected);
+		model.addAttribute("pathologiesGenericoSelected", pathologiesGenericoSelected);
+		
+		HomeCheckPatientUserDTO patientDTO = new HomeCheckPatientUserDTO(patient, user);
+		if (patientDTO.getBirthDate() != null) {
+		   String birthDateString = patientDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		   patientDTO.setBirthDateString(birthDateString);
+		}
+		model.addAttribute("patient", patientDTO);
+		List<Province> province = provinceService.getAll(Sort.by(Order.asc(Province.CODE_FIELD_NAME)));
+		List<PSEUser> users = userService.getAllByRole(this.nurseId);
+		model.addAttribute("province", province);
+		model.addAttribute("users", users);
+		return "redirect:/patients/"+patientIdentifier+"#ConfigurazioneSensori";
 	}
 	
 	

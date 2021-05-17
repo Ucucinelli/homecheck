@@ -14,10 +14,11 @@
    <!-- Custom fonts for this template -->
 <link rel="stylesheet" type="text/css" th:href="@{/webjars/font-awesome/5.15.1/css/all.min.css}" />
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+<link th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.css}" rel="stylesheet" type="text/css">
 <!-- Custom fonts for this template -->
 <link th:href="@{/css/ecubit-admin.css}" rel="stylesheet" type="text/css">
 <link th:href="@{/css/ecubit-admin.min.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/css/mio.css}" rel="stylesheet" type="text/css">
 
 <!-- Custom styles for this page -->
 <link th:href="@{/webjars/datatables/1.10.22/css/dataTables.bootstrap4.min.css}" rel="stylesheet">
@@ -385,7 +386,7 @@
                                 <!-- End Anagrafica Paziente panel-->
                                 <!-- Begin Patologie paziente panel -->
                                 <div class="tab-pane" id="PatologiePaziente" role="PatologiePaziente">
-                                    <form>
+                                    <form th:object="${patient}">
                                         <div class="row">
                                             <div class="col-xl-12">
                                                 <!-- Account details card Form-->
@@ -417,34 +418,15 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Testa e collo</div>
                                                                                       <div class="panel-body">
-                                                                                      <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
-                                                                                      </select>
-                                                                                     </div>
+                                                                                        <select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesTestaECollo}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																					    </select>                                                                                     
+																					  </div>
                                                                                   </div>
                                                                                 </div>
                                                                           
@@ -459,10 +441,15 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
-                                                                                            <option>Afasia</option>
-                                                                                            <option>Amartoma ipotalamico</option>
-                                                                                        </select>
+                                                                                        <select id="selected-select" th:field="*{pathologies}"
+																								class="multiselect selected form-control"
+																								size="17" multiple="multiple">
+																					    <option
+																								th:each="pathology: ${pathologiesTestaEColloSelected}"
+																								th:value="${pathology.id}"
+																								th:text="${pathology.nome}" />									
+																					  </select>   
+																					  
                                                                                      </div>
                                                                                   </div>
                                                                                 </div>
@@ -475,34 +462,14 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Occhi</div>
                                                                                       <div class="panel-body">
-                                                                                      <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
-                                                                                      </select>
+                                                                                       <select id="available-select"
+																								class="multiselect available form-control"
+																								size="17" multiple="multiple">
+																								<option
+																									th:each="pathology: ${pathologiesOcchi}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
+																					    </select>     
                                                                                      </div>
                                                                                   </div>
                                                                                 </div>
@@ -518,7 +485,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesOcchiSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -533,29 +504,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Torace e cuore</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesToraceECuore}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -572,10 +524,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
-                                                                                            <option>Angiomi cavernosi</option>
-                                                                                            <option>Disartria</option>
-                                                                                            <option>Disfonia</option>
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                            <option
+																									th:each="pathology: ${pathologiesToraceECuoreSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -590,27 +543,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Spalla</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesSpalla}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -627,12 +563,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
-                                                                                            <option>Gliomi</option>
-                                                                                            <option>Idrocefalo</option>
-                                                                                            <option>Linfomi</option>
-                                                                                            <option>Malformazione di Chiari</option>
-                                                                                            <option>Malformazioni artero-venose</option>
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                            <option
+																									th:each="pathology: ${pathologiesSpallaSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -647,32 +582,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Addome</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesAddome}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -689,7 +602,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesAddomeSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -704,32 +621,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Braccia e mani</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesBracciaEMani}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -746,7 +641,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesBracciaEManiSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -761,32 +660,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Zona Pelvica</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesZonaPelvica}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -803,7 +680,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesZonaPelvicaSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -818,32 +699,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Gambe</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                        <option
+																									th:each="pathology: ${pathologiesGambe}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -860,7 +719,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesGambeSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -875,32 +738,10 @@
                                                                                     <div class="panel-heading mb-2">Lista Patologie disponibili Piedi</div>
                                                                                       <div class="panel-body">
                                                                                       <select id="available-select" class="multiselect available form-control" size="17" multiple="multiple">
-                                                                                        <option>Afasia</option>
-                                                                                        <option>Amartoma ipotalamico</option>
-                                                                                        <option>Aneurismi cerebrali</option>
-                                                                                        <option>Angiomi cavernosi</option>
-                                                                                        <option>Disartria</option>
-                                                                                        <option>Disfonia</option>
-                                                                                        <option>Displasia corticale focale</option>
-                                                                                        <option>Distonie</option>
-                                                                                        <option>Emispasmo del facciale</option>
-                                                                                        <option>Epilessia del lobo temporale</option>
-                                                                                        <option>Ernie del disco</option>
-                                                                                        <option>Fistole artero-venose durali</option>
-                                                                                        <option>Gliomi</option>
-                                                                                        <option>Idrocefalo</option>
-                                                                                        <option>Linfomi</option>
-                                                                                        <option>Malformazione di Chiari</option>
-                                                                                        <option>Malformazioni artero-venose</option>
-                                                                                        <option>Medulloblastomi</option>
-                                                                                        <option>Meningiomi</option>
-                                                                                        <option>Metastasi cerebrale</option>
-                                                                                        <option>Mielopatia spondilogena cervicale</option>
-                                                                                        <option>Morbo di Parkinson</option>
-                                                                                        <option>Neurinomi</option>
-                                                                                        <option>Nevralgia del glosso-faringeo</option>
-                                                                                        <option>Nevralgia trigeminale</option>
-                                                                                        <option>Polimicrogiria</option>
+                                                                                       <option
+																									th:each="pathology: ${pathologiesPiedi}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                       </select>
                                                                                      </div>
                                                                                   </div>
@@ -917,7 +758,11 @@
                                                                                   <div class="panel panel-default">
                                                                                     <div class="panel-heading mb-2">Patologie selezionate</div>
                                                                                       <div class="panel-body">
-                                                                                        <select id="selected-select" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <select id="selected-select" th:field="*{pathologies}" class="multiselect selected form-control" size="17" multiple="multiple">
+                                                                                        <option
+																									th:each="pathology: ${pathologiesPiediSelected}"
+																									th:value="${pathology.id}"
+																									th:text="${pathology.nome}" />
                                                                                         </select>
                                                                                      </div>
                                                                                   </div>
@@ -953,7 +798,7 @@
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered">
+                                                            <table class="table table-bordered" id="dispositiviAssociati">
                                                                 <thead class="thead-dark">
                                                                     <tr>
                                                                         <th scope="col">Numero Seriale</th>
@@ -967,32 +812,28 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td>19/04/2021</td>
-                                                                        <td>19/12/2021</td>
-                                                                        <td>
-                                                                            <span class="btn-sm btn-primary btn-circle btn-icon" ><i class="fas fa-check"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Sensore Associato"></i></span>
-                                                                            <a href="#" class="btn-sm btn-google btn-circle btn-icon" data-toggle="modal" data-target="#unpairModal"><i class="fas fa-times"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Unpair Sensore"></i></a>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td>19/04/2021</td>
-                                                                        <td>19/12/2021</td>
-                                                                        <td>
-                                                                            <span class="btn-sm btn-primary btn-circle btn-icon" ><i class="fas fa-check"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Sensore Associato"></i></span>
-                                                                            <a href="#" class="btn-sm btn-google btn-circle btn-icon" data-toggle="modal" data-target="#unpairModal"><i class="fas fa-times"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Unpair Sensore"></i></a>
-                                                                        </td>
-                                                                    </tr>  
+                                                                    <tr th:each="device, stat : ${devices}" th:if="${device.idPaziente}">
+																			<td th:id="${device.id}" scope="row">
+																			<input type="hidden"
+																				th:attr="name='devices[' + ${stat.index} + '].id'"
+																				th:value="${devices[__${stat.index}__].id}" /><span
+																				th:text="${device.numeroSeriale}">Numero
+																					Seriale</span>
+																			<input type='hidden' class='paired' th:value=true th:attr="name='devices[' + ${stat.index} + '].selezionato'"/>		
+																		    <input type='hidden' class='paired' th:value="${devices[__${stat.index}__].termineAssegnazione}" th:attr="name='devices[' + ${stat.index} + '].termineAssegnazioneString'"/></td>
+																			<td><span th:text="${device.marca}">#</span></td>
+																			<td><span th:text="${device.modello}">#</span></td>
+																			<td><span th:text="${device.tipologia.tipo}">#</span></td>
+																			<td><span th:text="${device.btMacAddress}">#</span></td>
+																			<td><span th:text="${device.dataAssegnazione}">#</span></td>
+																			<td th:class="termineAssegnazione"><span
+																				th:text="${device.termineAssegnazione}">#</span></td>
+																			<td th:class="action">
+																			<span class="btn-sm btn-primary btn-circle btn-icon" ><i class="fas fa-check"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Sensore Associato"></i></span>
+                                                                            <a href="#" th:attr="data-id=''+${device.id}, data-numeroSeriale=''+${device.numeroSeriale}, data-marca=''+${device.marca}, data-modello=''+${device.modello}, data-tipologia=''+${device.tipologia.tipo}, data-btMacAddress=''+${device.btMacAddress},  data-sequence=''+${stat.index}"
+                                                                            class="btn-sm btn-google btn-circle btn-icon unpairUpdateModal" data-toggle="modal" data-target="#unpairModal"><i class="fas fa-times"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Unpair Sensore"></i></a>
+																			</td>
+																		</tr>
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -1009,7 +850,7 @@
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="table-responsive">
-                                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                            <table class="table table-bordered" id="dispositiviDisponibili" width="100%" cellspacing="0">
                                                                 <thead class="thead-dark">
                                                                     <tr>
                                                                         <th scope="col">Numero Seriale</th>
@@ -1031,47 +872,26 @@
                                                                     </tr>
                                                                 </tfoot>
                                                                 <tbody>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td><a href="#" class="btn-sm btn-info btn-circle btn-icon" data-toggle="modal" data-target="#AssociaDeviceModal"><i class="fas fa-exchange-alt"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Associa Sensore"></i></a></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td><a href="#" class="btn-sm btn-info btn-circle btn-icon" data-toggle="modal" data-target="#AssociaDeviceModal"><i class="fas fa-exchange-alt"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Associa Sensore"></i></a></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td><a href="#" class="btn-sm btn-info btn-circle btn-icon" data-toggle="modal" data-target="#AssociaDeviceModal"><i class="fas fa-exchange-alt"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Associa Sensore"></i></a></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td><a href="#" class="btn-sm btn-info btn-circle btn-icon" data-toggle="modal" data-target="#AssociaDeviceModal"><i class="fas fa-exchange-alt"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Associa Sensore"></i></a></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th scope="row">IDFGERT45</th>
-                                                                        <td>Huawei Watch GT 2 Pro</td>
-                                                                        <td>modello sensore</td>
-                                                                        <td>tipologia sensore</td>
-                                                                        <td>QWERTY-234-VAER</td>
-                                                                        <td><a href="#" class="btn-sm btn-info btn-circle btn-icon" data-toggle="modal" data-target="#AssociaDeviceModal"><i class="fas fa-exchange-alt"  data-toggle="tooltip" data-placement="top" title="" data-original-title="Associa Sensore"></i></a></td>
-                                                                    </tr>
-                                                                     
+                                                                    <tr th:each="device, stat : ${devices}" th:if="${device.idPaziente==null}">
+																			<td th:id="${device.id}" scope="row">
+																			    <input type="hidden" th:attr="name='devices[' + ${stat.index} + '].id'"
+																				th:value="${devices[__${stat.index}__].id}" />
+																				<input type='hidden' class='unpaired' th:attr="name='devices[' + ${stat.index} + '].selezionato'" 
+																				th:value=false />
+																			    <span th:text="${device.numeroSeriale}">Numero Seriale</span></td>
+																			<td><span th:text="${device.marca}">#</span></td>
+																			<td><span th:text="${device.modello}">#</span></td>
+																			<td><span th:text="${device.tipologia.tipo}">#</span></td>
+																			<td><span th:text="${device.btMacAddress}">#</span></td>
+																			<td th:class="action"><a href="#my_modal"
+																				th:attr="data-id=''+${device.id}, data-numeroSeriale=''+${device.numeroSeriale}, data-marca=''+${device.marca}, data-modello=''+${device.modello}, data-tipologia=''+${device.tipologia.tipo}, data-btMacAddress=''+${device.btMacAddress},  data-sequence=''+${stat.index}"
+																				class="btn-sm btn-info btn-circle btn-icon pairUpdateModal"
+																				data-toggle="modal"
+																				data-target="#AssociaDeviceModal"><i
+																					class="fas fa-exchange-alt" data-toggle="tooltip"
+																					data-placement="top" title=""
+																					data-original-title="Associa Sensore"></i></a></td>
+																		</tr>                                                      
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -2401,14 +2221,8 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; HomeCheck 2021</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+			<footer th:replace="fragments :: fragment_footer"> </footer>
+			<!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->
@@ -2449,10 +2263,13 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Sei sicuro di voler unpair il device Apple Watch?</div>
+                <div class="modal-body">
+                <input type="hidden" name="dispositivoUnpair"
+						id="valoriDispositivo" value="" />
+                Sei sicuro di voler unpair il device Apple Watch?</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancella</button>
-                    <a class="btn btn-primary" href="#" data-dismiss="modal">Unpair</a>
+                    <a th:onclick="unpairUpdate()" class="btn btn-primary" href="#" data-dismiss="modal">Unpair</a>
                 </div>
             </div>
         </div>
@@ -2487,7 +2304,10 @@
                         <div class="form-group col-md-6">
                             <label for="date3">Termine Assegnazione</label>
                             <div class="input-group input-group-joined">
-                                <input class="date form-control" id="date3" type="text" placeholder="YYYY/MM/DD" />
+                               <input class="form-control" id="modaldatepicker" type="text"
+										placeholder="YYYY/MM/DD" /> <input type="hidden"
+										name="valoriDispositivo" id="valoriDispositivo" value="" />
+							   <input type="hidden" id="end-date" name="end_date" />
                             </div>
                         </div>
                     </div>
@@ -2496,7 +2316,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                <a class="btn btn-primary" data-dismiss="modal">Associa</a>
+                <a th:onclick="pairUpdate()" class="btn btn-primary" data-dismiss="modal">Associa</a>
             </div>
         </div>
     </div>
@@ -2520,6 +2340,7 @@
 
 	<!-- Page level custom scripts -->
 	<script type="text/javascript" th:src="@{/js/demo/datatables-demo.js}"></script>
+	<script type="text/javascript" th:src="@{/js/mio.js}"></script>
 
 </body>
 </html>

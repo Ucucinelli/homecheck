@@ -120,13 +120,13 @@
 														class="btn-sm btn-warning btn-circle btn-icon"><i
 															class="fas fa-eye" data-toggle="tooltip"
 															data-placement="top"
-															data-original-title="scheda paziente"></i></a> <a
-														href="scheda-paziente.html#ConfigurazioneSensori"
+															data-original-title="scheda paziente"></i></a> 
+														<a th:href="@{/patients/{id}/ConfigurazioneSensori (id= ${patient.id}) }" 
 														class="btn-sm btn-info btn-circle btn-icon"><i
 															class="fas fa-heartbeat" data-toggle="tooltip"
 															data-placement="top"
-															data-original-title="Visualizza soglie sensori"></i></a> <a
-														href="#" class="btn-sm btn-dark btn-circle btn-icon"
+															data-original-title="Visualizza soglie sensori"></i></a> 
+														<a th:href="@{/patients/remove/{id} (id= ${patient.id})}" class="btn-sm btn-dark btn-circle btn-icon deletePatient"
 														data-toggle="modal" data-target="#deleteModal"><i
 															class="fas fa-trash-alt" data-toggle="tooltip"
 															data-placement="top"
@@ -202,7 +202,7 @@
 				<div class="modal-footer">
 					<button class="btn btn-secondary" type="button"
 						data-dismiss="modal">Close</button>
-					<a class="btn btn-primary" data-dismiss="modal">Delete Paziente</a>
+					<a id="removePatientFromList" class="btn btn-primary">Delete Paziente</a>
 				</div>
 			</div>
 		</div>
@@ -228,6 +228,8 @@
 
 	<!-- Page level custom scripts -->
 	<script type="text/javascript" th:src="@{/js/demo/datatables-demo.js}"></script>
+	
+	<script type="text/javascript" th:src="@{/js/mio.js}"></script>
 
 </body>
 </html>
