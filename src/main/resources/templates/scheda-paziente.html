@@ -76,7 +76,7 @@
                             <div class="tab-content">
                                 <!-- Begin Anagrafica Paziente panel-->
                                 <div class="tab-pane active" id="AnagraficaPaziente" role="AnagraficaPaziente">
-                                <form th:object="${patient}">
+                                <form th:action="@{/patients/anagrafica}" th:object="${patient}" method="post">
                                     <div class="row">
                                         <!-- Profile picture -->
                                         <div class="col-xl-3">
@@ -111,7 +111,11 @@
                                                         <div class="form-group col-md-5">
                                                             <label for="inputName">Nome</label>
                                                              <div class="input-group input-group-joined">
-                                                                <input th:field="*{name}" class="form-control" type="text" id="inputName" placeholder="Mario" aria-label="Nome" disabled required>
+                                                                <input th:field="*{id}" class="form-control" type="hidden" required>
+                                                                <input th:field="*{email}" class="form-control" type="hidden" required>
+                                                                <input th:field="*{password}" class="form-control" type="hidden" required>
+                                                                <input th:name="confirmPassword" th:value="*{password}" class="form-control" type="hidden" required>
+                                                                <input th:field="*{name}" class="form-control" type="text" id="inputName" placeholder="Mario" aria-label="Nome" readonly required>
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-user-tie"></i>
@@ -125,7 +129,7 @@
                                                         <div class="form-group col-md-5">
                                                             <label for="inputSurname">Cognome</label>
                                                             <div class="input-group input-group-joined">
-                                                               <input input th:field="*{surname}" class="form-control" type="text" id="inputSurname" placeholder="rossi" aria-label="Cognome" disabled required>
+                                                               <input th:field="*{surname}" class="form-control" type="text" id="inputSurname" placeholder="rossi" aria-label="Cognome" readonly required>
                                                                <div class="input-group-append">
                                                                    <span class="input-group-text">
                                                                        <i class="fas fa-user-tie"></i>
@@ -140,13 +144,13 @@
                                                             <label for="exampleFormControlTextarea1">Sesso</label><br>
                                                             <div class="form-check form-check-inline">
                                                                 <div class="custom-control custom-radio">
-                                                                    <input input th:field="*{sex}" class="custom-control-input" id="customRadio1" type="radio" name="customRadio" value="MALE" disabled required>
+                                                                    <input input th:field="*{sex}" class="custom-control-input radioDisabled" id="customRadio1" type="radio" name="customRadio" value="MALE" required>
                                                                     <label class="custom-control-label" for="customRadio1" >M</label>
                                                                 </div>
                                                             </div>
                                                             <div class="form-check form-check-inline">
                                                                 <div class="custom-control custom-radio">
-                                                                    <input th:field="*{sex}" class="custom-control-input" id="customRadio2" type="radio" name="customRadio" value="FEMALE" disabled required>
+                                                                    <input th:field="*{sex}" class="custom-control-input radioDisabled" id="customRadio2" type="radio" name="customRadio" value="FEMALE" required>
                                                                     <label class="custom-control-label" for="customRadio2">F</label>
                                                                 </div>
                                                             </div>
@@ -159,7 +163,7 @@
                                                         <div class="form-group col-md-4">
                                                             <label for="DOB">Data di nascita</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input  th:field="*{birthDateString}" class="form-control" type="text" id="inputDOB" placeholder="12/02/1996" aria-label="DOB" disabled required>
+                                                                <input th:field="*{birthDateString}" class="form-control" type="text" id="inputDOB" placeholder="12/02/1996" aria-label="DOB" readonly required>
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="far fa-calendar-alt"></i>
@@ -173,7 +177,7 @@
                                                         <div class="form-group col-md-4">
                                                             <label for="inputCodFiscale">Codice Fiscale</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input th:field="*{fiscalCode}" class="form-control" type="text" id="inputCodFiscale" placeholder="RSSFLV95C12H11UZ" aria-label="inputCodFiscale" disabled>
+                                                                <input th:field="*{fiscalCode}" class="form-control" type="text" id="inputCodFiscale" placeholder="RSSFLV95C12H11UZ" aria-label="inputCodFiscale" readonly>
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-id-card"></i>
@@ -187,7 +191,7 @@
                                                         <div class="form-group col-md-4">
                                                             <label for="LuogoDiNascita">Luogo Di Nascita</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input th:field="*{birthPlace}" class="form-control" type="text" id="inputLuogoDiNascita" placeholder="milano" aria-label="comuneDiNascita" disabled>
+                                                                <input th:field="*{birthPlace}" class="form-control" type="text" id="inputLuogoDiNascita" placeholder="milano" aria-label="comuneDiNascita" readonly>
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-map-marker-alt"></i>
@@ -202,7 +206,7 @@
                                                             <label for="ProvinciaDiNascita">Provincia di nascita</label>
                                                            <select th:field="*{birthProvince}"
 																		id="ProvinciaDiNascita"
-																		class="form-control custom-select" disabled>
+																		class="form-control custom-select" readonly>
 																		<option selected th:value="''">Seleziona la
 																			Provincia</option>
 																		<option th:each="provincia: ${province}"
@@ -216,7 +220,7 @@
                                                         <div class="form-group col-md-4">
                                                             <label for="Cittadinanza">Cittadinanza</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input th:field="*{nationality}" class="form-control" type="text" id="inputCittadinanza" placeholder="italiana" aria-label="Cittadinanza" disabled>
+                                                                <input th:field="*{nationality}" class="form-control" type="text" id="inputCittadinanza" placeholder="italiana" aria-label="Cittadinanza" readonly>
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-map-marker-alt"></i>
@@ -329,7 +333,7 @@
                                                         <div class="form-group col-md-2">
                                                             <label for="inputAltezza">Altezza</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input  th:field="*{height}" class="form-control" type="number" id="inputAltezza" placeholder="180" aria-label="Altezza">
+                                                                <input  th:field="*{height}" th:value="0" class="form-control" type="number" min="0" id="inputAltezza" placeholder="180" aria-label="Altezza">
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-arrows-alt-v"></i>
@@ -343,7 +347,7 @@
                                                         <div class="form-group col-md-2">
                                                             <label for="inputPeso">Peso</label>
                                                             <div class="input-group input-group-joined">
-                                                                <input th:field="*{weight}" class="form-control" type="number" id="inputPeso" placeholder="65" aria-label="inputPeso">
+                                                                <input th:field="*{weight}" class="form-control" type="number" min="0" id="inputPeso" placeholder="65" aria-label="inputPeso">
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
                                                                         <i class="fas fa-weight"></i>
@@ -386,7 +390,7 @@
                                 <!-- End Anagrafica Paziente panel-->
                                 <!-- Begin Patologie paziente panel -->
                                 <div class="tab-pane" id="PatologiePaziente" role="PatologiePaziente">
-                                    <form th:object="${patient}">
+                                    <form th:action="@{/patients/patologie}" th:object="${patient}" method="post">
                                         <div class="row">
                                             <div class="col-xl-12">
                                                 <!-- Account details card Form-->
@@ -411,6 +415,7 @@
                                                             </div>
                                                             <div class="col-10">
                                                                     <div class="tab-content" id="nav-tabContent">
+                                                                    <input th:field="*{id}" class="form-control" type="hidden" required>
                                                                         <!-- Patologia 1-->
                                                                         <div class="tab-pane fade show active" id="list-patologia" role="tabpanel" aria-labelledby="list-patologia-list">
                                                                             <div class="row addremove-multiselect">
@@ -788,7 +793,8 @@
                                 <!-- End Patologie paziente panel -->
                                 <!-- Begin Dispositivi Associati e da associare al paziente panel -->
                                 <div class="tab-pane" id="DispositiviAssociati" role="DispositiviAssociati">
-                                    <form>
+                                    <form th:action="@{/patients/dispositivi}" th:object="${patient}" method="post">
+                                    <input th:field="*{id}" class="form-control" type="hidden" required>
                                         <div class="row">
                                             <div class="col-xl-12">
                                                 <!-- Lista Dispositivi Associati table-->
@@ -2330,7 +2336,7 @@
 		th:src="@{/webjars/jquery-easing/1.4.1/jquery.easing.min.js}"></script>
 
 	<!-- Custom scripts for all pages-->
-	<script type="text/javascript" th:src="@{/js/ecubit-admin.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/ecubit-admin.js}"></script>
 	
     <!-- Page level plugins -->
 	<script type="text/javascript" th:src="@{/webjars/datatables/1.10.22/js/jquery.dataTables.min.js}"></script>

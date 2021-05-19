@@ -1,6 +1,7 @@
 package it.ecubit.homecheck.web;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,6 +75,9 @@ public class PatientController {
 	
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Value("${user.domain}")
 	private String userDomain;
@@ -302,127 +307,13 @@ public class PatientController {
 	
 	@GetMapping(path = "/{id}/ConfigurazioneSensori")
 	public String getConfigurazioneById(@PathVariable("id") String patientIdentifier, Model model) throws PSEServiceException {
-		PSEUser user = userService.getById(patientIdentifier);
-		HomeCheckPatient patient;
-		List <Device> devicesUnassigned = deviceService.findAllUnassigned();
-		List <Device> devices = deviceService.findByPatientId(patientIdentifier);
-		devices.addAll(devicesUnassigned);
-		model.addAttribute("devices", devices);
-		if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
-			patient = aslVtPatientService.getById(patientIdentifier);
-		}
-		else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
-			patient = hidaPatientService.getById(patientIdentifier);				
-		}
-		else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
-			patient = lncPatientService.getById(patientIdentifier);			
-		}
-		else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
-			patient = salusPatientService.getById(patientIdentifier);			
-		}
-		else {
-			throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
-		}
-		List<HCPathology> pathologiesTestaECollo = new ArrayList<>();
-		List<HCPathology> pathologiesTestaEColloSelected = new ArrayList<>();
-		List<HCPathology> pathologiesOcchi = new ArrayList<>();
-		List<HCPathology> pathologiesOcchiSelected = new ArrayList<>();
-		List<HCPathology> pathologiesToraceECuore = new ArrayList<>();
-		List<HCPathology> pathologiesToraceECuoreSelected = new ArrayList<>();
-		List<HCPathology> pathologiesSpalla = new ArrayList<>();
-		List<HCPathology> pathologiesSpallaSelected = new ArrayList<>();
-		List<HCPathology> pathologiesAddome = new ArrayList<>();
-		List<HCPathology> pathologiesAddomeSelected = new ArrayList<>();
-		List<HCPathology> pathologiesBracciaEMani = new ArrayList<>();
-		List<HCPathology> pathologiesBracciaEManiSelected = new ArrayList<>();
-		List<HCPathology> pathologiesZonaPelvica = new ArrayList<>();
-		List<HCPathology> pathologiesZonaPelvicaSelected = new ArrayList<>();
-		List<HCPathology> pathologiesGambe = new ArrayList<>();
-		List<HCPathology> pathologiesGambeSelected = new ArrayList<>();
-		List<HCPathology> pathologiesPiedi = new ArrayList<>();
-		List<HCPathology> pathologiesPiediSelected = new ArrayList<>();
-		List<HCPathology> pathologiesGenerico = new ArrayList<>();
-		List<HCPathology> pathologiesGenericoSelected = new ArrayList<>();
-        for (HCPathology pathology: patient.getPatologie()) {
-        	if (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TESTA_E_COLLO.toString()))
-        	    pathologiesTestaEColloSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.OCCHI.toString()))
-        		pathologiesOcchiSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.TORACE_E_CUORE.toString()))
-    		    pathologiesToraceECuoreSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.SPALLA.toString()))
-    		    pathologiesSpallaSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ADDOME.toString()))
-    		    pathologiesAddomeSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.BRACCIA_E_MANI.toString()))
-    		    pathologiesBracciaEManiSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.ZONA_PELVICA.toString()))
-    		    pathologiesZonaPelvicaSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GAMBE.toString()))
-    		    pathologiesGambeSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.PIEDI.toString()))
-    		    pathologiesPiediSelected.add(pathology);
-        	if  (pathology.getAmbito().name().equals(HCPathology.PathologyScope.GENERICO.toString()))
-    		    pathologiesGenericoSelected.add(pathology);  	    			
-        }
-        pathologiesTestaECollo = hcPathologyService.getByScope(HCPathology.PathologyScope.TESTA_E_COLLO.toString());
-        pathologiesTestaECollo.removeAll(pathologiesTestaEColloSelected);
-        pathologiesOcchi = hcPathologyService.getByScope(HCPathology.PathologyScope.OCCHI.toString());
-        pathologiesOcchi.removeAll(pathologiesOcchiSelected);
-        pathologiesToraceECuore = hcPathologyService.getByScope(HCPathology.PathologyScope.TORACE_E_CUORE.toString());
-        pathologiesToraceECuore.removeAll(pathologiesToraceECuoreSelected);
-        pathologiesSpalla = hcPathologyService.getByScope(HCPathology.PathologyScope.SPALLA.toString());
-        pathologiesSpalla.removeAll(pathologiesSpallaSelected);
-        pathologiesAddome = hcPathologyService.getByScope(HCPathology.PathologyScope.ADDOME.toString());
-        pathologiesAddome.removeAll(pathologiesAddomeSelected);
-        pathologiesBracciaEMani = hcPathologyService.getByScope(HCPathology.PathologyScope.BRACCIA_E_MANI.toString());
-        pathologiesBracciaEMani.removeAll(pathologiesBracciaEManiSelected);
-        pathologiesZonaPelvica = hcPathologyService.getByScope(HCPathology.PathologyScope.ZONA_PELVICA.toString());
-        pathologiesZonaPelvica.removeAll(pathologiesZonaPelvicaSelected);
-        pathologiesGambe = hcPathologyService.getByScope(HCPathology.PathologyScope.GAMBE.toString());
-        pathologiesGambe.removeAll(pathologiesGambeSelected);
-        pathologiesPiedi = hcPathologyService.getByScope(HCPathology.PathologyScope.PIEDI.toString());
-        pathologiesPiedi.removeAll(pathologiesPiediSelected);
-        pathologiesGenerico = hcPathologyService.getByScope(HCPathology.PathologyScope.GENERICO.toString());
-        pathologiesGenerico.removeAll(pathologiesGenericoSelected);
-        model.addAttribute("pathologiesTestaECollo", pathologiesTestaECollo);
-		model.addAttribute("pathologiesOcchi", pathologiesOcchi);
-		model.addAttribute("pathologiesToraceECuore", pathologiesToraceECuore);
-		model.addAttribute("pathologiesSpalla", pathologiesSpalla);
-		model.addAttribute("pathologiesAddome", pathologiesAddome);
-		model.addAttribute("pathologiesBracciaEMani", pathologiesBracciaEMani);
-		model.addAttribute("pathologiesZonaPelvica", pathologiesZonaPelvica);
-		model.addAttribute("pathologiesGambe", pathologiesGambe);
-		model.addAttribute("pathologiesPiedi", pathologiesPiedi);
-		model.addAttribute("pathologiesGenerico", pathologiesGenerico);
-        model.addAttribute("pathologiesTestaEColloSelected", pathologiesTestaEColloSelected);
-		model.addAttribute("pathologiesOcchiSelected", pathologiesOcchiSelected);
-		model.addAttribute("pathologiesToraceECuoreSelected", pathologiesToraceECuoreSelected);
-		model.addAttribute("pathologiesSpallaSelected", pathologiesSpallaSelected);
-		model.addAttribute("pathologiesAddomeSelected", pathologiesAddomeSelected);
-		model.addAttribute("pathologiesBracciaEManiSelected", pathologiesBracciaEManiSelected);
-		model.addAttribute("pathologiesZonaPelvicaSelected", pathologiesZonaPelvicaSelected);
-		model.addAttribute("pathologiesGambeSelected", pathologiesGambeSelected);
-		model.addAttribute("pathologiesPiediSelected", pathologiesPiediSelected);
-		model.addAttribute("pathologiesGenericoSelected", pathologiesGenericoSelected);
-		
-		HomeCheckPatientUserDTO patientDTO = new HomeCheckPatientUserDTO(patient, user);
-		if (patientDTO.getBirthDate() != null) {
-		   String birthDateString = patientDTO.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		   patientDTO.setBirthDateString(birthDateString);
-		}
-		model.addAttribute("patient", patientDTO);
-		List<Province> province = provinceService.getAll(Sort.by(Order.asc(Province.CODE_FIELD_NAME)));
-		List<PSEUser> users = userService.getAllByRole(this.nurseId);
-		model.addAttribute("province", province);
-		model.addAttribute("users", users);
 		return "redirect:/patients/"+patientIdentifier+"#ConfigurazioneSensori";
 	}
 	
 	
 	@PostMapping
-	public String registerUserAccount(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO, Model model,
-			BindingResult result) throws PSEServiceException {
+	public String registerUserAccount(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO,
+			BindingResult result, Model model) throws PSEServiceException {
 
 		/*
 		 * PSEUser existing = userService.findByEmail(patientDTO.getEmail()); if
@@ -444,25 +335,32 @@ public class PatientController {
 			String newId = userService.save(newUser);
 			HomeCheckPatient newPatient = patientDTO.getPatient();
 			newPatient.setId(newId);
-			if (newPatient.getIdMedico() != null && newPatient.getNomeMedicoCurante() == null) {
-				PSEUser clinicianAsUser = userService.getById(newPatient.getIdMedico());
-				newPatient.setNomeMedicoCurante(clinicianAsUser.getNome() + " " + clinicianAsUser.getCognome());
-			}
-			if (!newPatient.getIdOperatoreSanitarioAssegnato().equals("") && newPatient.getNomeOperatoreSanitarioAssegnato() == null) {
-				PSEUser nurseAsUser = userService.getById(newPatient.getIdOperatoreSanitarioAssegnato());
-				newPatient.setNomeOperatoreSanitarioAssegnato(nurseAsUser.getNome() + " " + nurseAsUser.getCognome());
-			}
+			/*
+			 * if (newPatient.getIdMedico() != null && newPatient.getNomeMedicoCurante() ==
+			 * null) { PSEUser clinicianAsUser =
+			 * userService.getById(newPatient.getIdMedico());
+			 * newPatient.setNomeMedicoCurante(clinicianAsUser.getNome() + " " +
+			 * clinicianAsUser.getCognome()); } if
+			 * (!newPatient.getIdOperatoreSanitarioAssegnato().equals("") &&
+			 * newPatient.getNomeOperatoreSanitarioAssegnato() == null) { PSEUser
+			 * nurseAsUser =
+			 * userService.getById(newPatient.getIdOperatoreSanitarioAssegnato());
+			 * newPatient.setNomeOperatoreSanitarioAssegnato(nurseAsUser.getNome() + " " +
+			 * nurseAsUser.getCognome()); }
+			 */
 			for (Device device: patientDTO.getDevices()) {
-				if (device.getTermineAssegnazioneString() != null) {
+				if (device.getSelezionato() != null && device.getSelezionato() == true) {
+				   if(!device.getTermineAssegnazioneString().equals("")) {
 				   LocalDate dateEnd = LocalDate.parse(device.getTermineAssegnazioneString(), formatter);
 				   device.setTermineAssegnazione(dateEnd);
+				   }
 				}
 			}
 			if (userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
 				AslVtPatient patient = aslVtPatientService.save((AslVtPatient) newPatient);
 				for (Device device: patientDTO.getDevices()) {
 					if (device.getSelezionato())
-					   deviceService.assignDeviceToPatient(device.getId(), patient.getId(), Optional.of(device.getTermineAssegnazione()));
+					   deviceService.assignDeviceToPatient(device.getId(), patient.getId(), Optional.ofNullable(device.getTermineAssegnazione()));
 				}
 				
 			} else if (userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
@@ -470,19 +368,19 @@ public class PatientController {
 				model.addAttribute("patient", newHidaPatient);
 				for (Device device: patientDTO.getDevices()) {
 					if (device.getSelezionato() != null)
-					   deviceService.assignDeviceToPatient(device.getId(), newHidaPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+					   deviceService.assignDeviceToPatient(device.getId(), newHidaPatient.getId(), Optional.ofNullable(device.getTermineAssegnazione()));
 				}
 			} else if (userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
 				LncPatient newLncPatient = lncPatientService.save((LncPatient) newPatient);
 				for (Device device: patientDTO.getDevices()) {
 					if (device.getSelezionato())
-					   deviceService.assignDeviceToPatient(device.getId(), newLncPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+					   deviceService.assignDeviceToPatient(device.getId(), newLncPatient.getId(), Optional.ofNullable(device.getTermineAssegnazione()));
 				}
 			} else if (userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
 				SalusPatient newSalusPatient = salusPatientService.save((SalusPatient) newPatient);
 				for (Device device: patientDTO.getDevices()) {
 					if (device.getSelezionato())
-					   deviceService.assignDeviceToPatient(device.getId(), newSalusPatient.getId(), Optional.of(device.getTermineAssegnazione()));
+					   deviceService.assignDeviceToPatient(device.getId(), newSalusPatient.getId(), Optional.ofNullable(device.getTermineAssegnazione()));
 				}
 			} else {
 				throw new InvalidParameterFormatException("domain.not.recognized", new Object[] { userDomain });
@@ -497,7 +395,180 @@ public class PatientController {
 		 * "redirect:/registration?success";
 		 */
 
-		return "redirect:/patients#PatologiePaziente";
+		return "redirect:/patients#AnagraficaPaziente";
 	}
+	
+	
+	@PostMapping(path = "/anagrafica")
+	public String updateUserRegistry(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO,
+			BindingResult result, Model model) throws PSEServiceException {
+
+		/*
+		 * PSEUser existing = userService.findByEmail(patientDTO.getEmail()); if
+		 * (existing != null) { result.rejectValue("email", null,
+		 * "There is already an account registered with that email"); }
+		 */
+
+		if (result.hasErrors()) {
+			return "scheda-paziente";
+		}
+		try {
+			patientDTO.setDomain(userDomain);
+            PSEUser existingUser = userService.getById(patientDTO.getId());
+            existingUser.setIndirizzo(patientDTO.getAddress());
+            existingUser.setCitta(patientDTO.getCity());
+            existingUser.setProvincia(patientDTO.getProvince());
+            existingUser.setStato(patientDTO.getCountry());
+            existingUser.setTelefonoFisso(patientDTO.getFixedPhone());
+            existingUser.setTelefonoCellulare(patientDTO.getCellPhone());
+            userService.update(existingUser, false);
+        
+			HomeCheckPatient existingPatient;
+			if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+				existingPatient = aslVtPatientService.getById(patientDTO.getId());
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+				existingPatient = hidaPatientService.getById(patientDTO.getId());				
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+				existingPatient = lncPatientService.getById(patientDTO.getId());			
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+				existingPatient = salusPatientService.getById(patientDTO.getId());			
+			}
+			else {
+				throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
+			}
+			existingPatient.setIndirizzo(patientDTO.getAddress());
+			existingPatient.setCitta(patientDTO.getCity());
+			existingPatient.setProvincia(patientDTO.getProvince());
+			existingPatient.setStato(patientDTO.getCountry());
+			existingPatient.setTelefonoFisso(patientDTO.getFixedPhone());
+			existingPatient.setTelefonoCellulare(patientDTO.getCellPhone());
+			existingPatient.setNomeMedicoCurante(patientDTO.getClinicianFullName());
+			existingPatient.setHeight(patientDTO.getHeight());
+			existingPatient.setWeight(patientDTO.getWeight());
+			existingPatient.setIdOperatoreSanitarioAssegnato(patientDTO.getNurseId());
+			
+			if (userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+				aslVtPatientService.update((AslVtPatient) existingPatient);				
+			} else if (userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+				hidaPatientService.update((HidaPatient) existingPatient);
+			} else if (userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+				lncPatientService.update((LncPatient) existingPatient);
+			} else if (userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+				salusPatientService.update((SalusPatient) existingPatient);
+			} 
+			
+		} catch (Exception e) {
+            System.out.println("Exception : "+e);
+		}
+		/*
+		 * AslVtPatient newPatient = patientDTO.getPatient();
+		 * 
+		 * aslVtPatientService.save(newPatient); return
+		 * "redirect:/registration?success";
+		 */
+
+		return  "redirect:/patients/"+patientDTO.getId()+"#AnagraficaPaziente";
+	}
+	
+	
+	@PostMapping(path = "/dispositivi")
+	public String updateUserDevices(@ModelAttribute("patient") HomeCheckPatientUserDTO patientDTO,
+			BindingResult result, Model model) throws PSEServiceException {
+		
+		if (result.hasErrors()) {
+			return "scheda-paziente";
+		}
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String idPatient = patientDTO.getId();
+			List<Device> devices = deviceService.findByPatientId(idPatient);
+			for (Device device : devices)  {
+				deviceService.revokeDeviceAssignmentToPatient(device.getId(), idPatient);
+		    }
+			
+			for (Device device: patientDTO.getDevices()) {
+				if ( device.getSelezionato() == true) {
+				   if(!device.getTermineAssegnazioneString().equals("")) {
+				      LocalDate dateEnd = LocalDate.parse(device.getTermineAssegnazioneString(), formatter);
+				      device.setTermineAssegnazione(dateEnd);
+				   }
+				   deviceService.assignDeviceToPatient(device.getId(), idPatient, Optional.ofNullable(device.getTermineAssegnazione()));
+				}
+			}		
+		} catch (Exception e) {
+            System.out.println("Exception : "+e);
+		}
+		/*
+		 * AslVtPatient newPatient = patientDTO.getPatient();
+		 * 
+		 * aslVtPatientService.save(newPatient); return
+		 * "redirect:/registration?success";
+		 */
+
+		return  "redirect:/patients/"+patientDTO.getId()+"#DispositiviAssociati";
+	}
+	
+	
+	@PostMapping(path = "/patologie")
+	public String updateUserPathologies(@ModelAttribute("patient") HomeCheckPatientUserDTO patientDTO,
+			BindingResult result, Model model) throws PSEServiceException {
+
+		/*
+		 * PSEUser existing = userService.findByEmail(patientDTO.getEmail()); if
+		 * (existing != null) { result.rejectValue("email", null,
+		 * "There is already an account registered with that email"); }
+		 */
+
+		if (result.hasErrors()) {
+			return "scheda-paziente";
+		}
+		try {
+		  
+			HomeCheckPatient existingPatient;
+			if(userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+				existingPatient = aslVtPatientService.getById(patientDTO.getId());
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+				existingPatient = hidaPatientService.getById(patientDTO.getId());				
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+				existingPatient = lncPatientService.getById(patientDTO.getId());			
+			}
+			else if(userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+				existingPatient = salusPatientService.getById(patientDTO.getId());			
+			}
+			else {
+				throw new InvalidParameterFormatException("domain.not.recognized", new Object[] {userDomain});
+			}
+			existingPatient.setPatologie(patientDTO.getPathologies());
+			
+			if (userDomain.equalsIgnoreCase(Domain.ASL_VT_DOMAIN.getNome())) {
+				aslVtPatientService.update((AslVtPatient) existingPatient);				
+			} else if (userDomain.equalsIgnoreCase(Domain.HIDA_DOMAIN.getNome())) {
+				hidaPatientService.update((HidaPatient) existingPatient);
+			} else if (userDomain.equalsIgnoreCase(Domain.LN_CONSULTING_DOMAIN.getNome())) {
+				lncPatientService.update((LncPatient) existingPatient);
+			} else if (userDomain.equalsIgnoreCase(Domain.SALUS_DOMAIN.getNome())) {
+				salusPatientService.update((SalusPatient) existingPatient);
+			} 
+			
+		} catch (Exception e) {
+            System.out.println("Exception : "+e);
+		}
+		/*
+		 * AslVtPatient newPatient = patientDTO.getPatient();
+		 * 
+		 * aslVtPatientService.save(newPatient); return
+		 * "redirect:/registration?success";
+		 */
+
+		return  "redirect:/patients/"+patientDTO.getId()+"#PatologiePaziente";
+	}
+	
+	
+	
 
 }

@@ -1,4 +1,5 @@
 $(function() {
+	$('.radioDisabled:not(:checked)').attr('disabled', true);
 	$("#datepicker").datepicker({
 		
 		dateFormat: "dd/mm/yy",
@@ -126,13 +127,12 @@ function pairUpdate() {
     var btMacAddress = $(".modal-body #valoriDispositivo")[0].getAttribute("btMacAddress");
     var btMacAddressText = btMacAddress != "null"? btMacAddress:"";
     var sequence = "devices["+numberSequence+"].selezionato";
-    var dataTermineAssegnazione = $("#modaldatepicker").val();
     var dataTermineShow = $("#end-date").val();
     var termineAssegnazione = "devices["+numberSequence+"].termineAssegnazioneString";
     var idSequence = "devices["+numberSequence+"].id";
 
     $("#"+idDispositivo).parent().remove();
-    $("#dispositiviAssociati").find("tbody").append("<tr> <td id="+idDispositivo+" scope='row'><input type='hidden' name="+idSequence+" value="+idDispositivo+" /><input type='hidden' class='paired' name="+sequence+" value=true /><input type='hidden' class='paired' name="+termineAssegnazione+" value="+dataTermineAssegnazione+"/><span>"+numeroSerialeText+"</span> </td>"+
+    $("#dispositiviAssociati").find("tbody").append("<tr> <td id="+idDispositivo+" scope='row'><input type='hidden' name="+idSequence+" value="+idDispositivo+" /><input type='hidden' class='paired' name="+sequence+" value=true /><input type='hidden' class='paired' name="+termineAssegnazione+" value="+dataTermineShow+"><span>"+numeroSerialeText+"</span> </td>"+
     "<td><span>"+marcaText+"</span></td>"+
 	"<td><span>"+modelloText+"</span></td>"+
 	"<td><span>"+tipologiaText+"</span></td>"+
