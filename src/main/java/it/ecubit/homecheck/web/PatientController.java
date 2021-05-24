@@ -5,14 +5,17 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -25,19 +28,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import it.ecubit.homecheck.UserProperties;
+import it.ecubit.homecheck.web.dto.SensorMeasurementThresholdValue;
 import it.ecubit.pse.api.dtos.HomeCheckPatientUserDTO;
+import it.ecubit.pse.api.dtos.SensorMeasurementThresholdValueDTO;
+import it.ecubit.pse.api.dtos.SensorThresholdValueDTO;
 import it.ecubit.pse.api.exceptions.InvalidParameterFormatException;
 import it.ecubit.pse.api.exceptions.PSEServiceException;
 import it.ecubit.pse.api.interfaces.AslVtPatientServiceInterface;
+import it.ecubit.pse.api.interfaces.DeviceSensorServiceInterface;
+import it.ecubit.pse.api.interfaces.DeviceServiceInterface;
+import it.ecubit.pse.api.interfaces.HCPathologyServiceInterface;
 import it.ecubit.pse.api.interfaces.HidaPatientServiceInterface;
 import it.ecubit.pse.api.interfaces.LncPatientServiceInterface;
+import it.ecubit.pse.api.interfaces.ProvinceServiceInterface;
 import it.ecubit.pse.api.interfaces.SalusPatientServiceInterface;
+import it.ecubit.pse.api.interfaces.SensorMeasurementScheduleServiceInterface;
+import it.ecubit.pse.api.interfaces.SensorThresholdValueServiceInterface;
+import it.ecubit.pse.api.interfaces.UserServiceInterface;
+import it.ecubit.pse.api.services.DeviceSensorService;
 import it.ecubit.pse.api.services.DeviceService;
 import it.ecubit.pse.api.services.HCPathologyService;
 import it.ecubit.pse.api.services.ProvinceService;
 import it.ecubit.pse.api.services.UserService;
 import it.ecubit.pse.mongo.entities.AslVtPatient;
 import it.ecubit.pse.mongo.entities.Device;
+import it.ecubit.pse.mongo.entities.DeviceSensor;
+import it.ecubit.pse.mongo.entities.DeviceType;
 import it.ecubit.pse.mongo.entities.Domain;
 import it.ecubit.pse.mongo.entities.HCPathology;
 import it.ecubit.pse.mongo.entities.HidaPatient;
@@ -46,6 +62,9 @@ import it.ecubit.pse.mongo.entities.LncPatient;
 import it.ecubit.pse.mongo.entities.PSEUser;
 import it.ecubit.pse.mongo.entities.Province;
 import it.ecubit.pse.mongo.entities.SalusPatient;
+import it.ecubit.pse.mongo.entities.SensorDefaultThresholdValue;
+import it.ecubit.pse.mongo.entities.SensorMeasurementPeriod;
+import it.ecubit.pse.mongo.entities.SensorMeasurementTimeSchedule;
 import it.ecubit.pse.mongo.utils.TypedRole.RoleType;
 
 @Controller
@@ -53,7 +72,7 @@ import it.ecubit.pse.mongo.utils.TypedRole.RoleType;
 public class PatientController {
 
 	@Autowired
-	private UserService userService;
+	private UserServiceInterface userService;
 
 	@Autowired
 	private AslVtPatientServiceInterface aslVtPatientService;
@@ -68,13 +87,22 @@ public class PatientController {
 	private SalusPatientServiceInterface salusPatientService;
 	
 	@Autowired
-	private HCPathologyService hcPathologyService;
+	private HCPathologyServiceInterface hcPathologyService;
 	
 	@Autowired
-	private ProvinceService provinceService;
+	private ProvinceServiceInterface provinceService;
 	
 	@Autowired
-	private DeviceService deviceService;
+	private DeviceServiceInterface deviceService;
+	
+	@Autowired
+	private DeviceSensorServiceInterface deviceSensorService;
+	
+	@Autowired
+	private SensorThresholdValueServiceInterface sensorThresholdValueService;
+	
+	@Autowired
+	private SensorMeasurementScheduleServiceInterface sensorMeasurementScheduleService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -301,6 +329,36 @@ public class PatientController {
 		List<PSEUser> users = userService.getAllByRole(this.nurseId);
 		model.addAttribute("province", province);
 		model.addAttribute("users", users);
+		Set<DeviceSensor> devicesSensor = new LinkedHashSet<>();
+		Set<DeviceType> devicesType = new LinkedHashSet<>();
+		List<SensorThresholdValueDTO> sensors = new ArrayList<>();
+		List<SensorMeasurementThresholdValueDTO> outerSensors = new ArrayList<>();
+		Sort defaultThresholdSort = Sort.by(Direction.ASC, SensorDefaultThresholdValue.THRESHOLD_TYPE_FIELD_NAME, SensorDefaultThresholdValue.MIN_THRESHOLD_VALUE_FIELD_NAME, SensorDefaultThresholdValue.MAX_THRESHOLD_VALUE_FIELD_NAME);
+		Sort scheduleSort = Sort.by(SensorMeasurementTimeSchedule.PERIOD_LABEL_FIELD_NAME);
+		List<SensorMeasurementTimeSchedule> schedules = new ArrayList<>();
+		
+		List<Device> deviceAssigned = deviceService.findByPatientId(patientIdentifier);
+		for (Device device: deviceAssigned)  {
+			devicesType.add(device.getTipologia());
+		}
+		for (DeviceType deviceType: devicesType)  {
+			 devicesSensor.addAll(deviceSensorService.findByDeviceType(deviceType));
+		}
+
+		for (DeviceSensor deviceSensor:devicesSensor)  {
+		   sensors = sensorThresholdValueService.getThresholdForPatientAndSensorTypeSorted(patientIdentifier, deviceSensor.getTipoSensore(), defaultThresholdSort);
+		   schedules = sensorMeasurementScheduleService.getDefinedSchedulesForPatientAndSensorTypeSorted(patientIdentifier, deviceSensor.getTipoSensore(), scheduleSort);
+		   if (sensors != null && sensors.size() > 0)   {
+		   SensorMeasurementThresholdValueDTO sensorMeasuerementThresholdValue = new SensorMeasurementThresholdValueDTO(sensors, schedules);
+		   outerSensors.add(sensorMeasuerementThresholdValue);  
+		   }
+		}
+		model.addAttribute("outerSensors", outerSensors);
+		
+		List<SensorMeasurementPeriod> measurementsPeriod = sensorMeasurementScheduleService.getAllSensorMeasurementPeriods();
+		model.addAttribute("measurementsPeriod", measurementsPeriod);
+		
+		
 		return "scheda-paziente";
 	}
 	
