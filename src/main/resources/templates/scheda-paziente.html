@@ -1229,7 +1229,16 @@
 											<!-- title -->
 											<div class="float-left">
 												<h6 class="m-0 font-weight-bold text-primary">
-													<img class="mr-2" src="../img/ico-temperatura.svg"
+													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'temperatura-corporea'}" class="mr-2" src="../img/ico-temperatura.svg"
+														width="30px"
+														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
+													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'ossigenazione-sangue'}" class="mr-2" src="../img/ico-ossigeno.svg"
+														width="30px"
+														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
+													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'battito-cardiaco'}" class="mr-2" src="../img/ico-frequenza-battito.svg"
+														width="30px"
+														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
+													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'pressione-arteriosa'}" class="mr-2" src="../img/ico-pressione-sanguigna.svg"
 														width="30px"
 														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
 												</h6>
