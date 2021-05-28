@@ -56,13 +56,13 @@
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover();
   })
-/*  $('.nextTab').click(function(){
+  $('.nextTab').click(function(){
     var nextId = $(this).parents('.tab-pane').next().attr("id");
   
     $('a[href$="'+nextId+'"]').tab('show');
       
     return false;
-  })*/
+  })
   $('.prevTab').click(function(){
     var prevId = $(this).parents('.tab-pane').prev().attr("id");
   
@@ -187,8 +187,8 @@
      //replace with sorted my_options;
      $(this).empty().append( my_options );
   
-     // clearing any selections
-     $("#"+this.attr('id')+" option").attr('selected', false);
+     // set selections
+     $("#"+this.attr('id')+" option").prop('selected', true);
   }
 
   $("input#pwd").on("focus keyup", function () {

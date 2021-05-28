@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.validation.Valid;
 
@@ -65,6 +67,7 @@ import it.ecubit.pse.mongo.entities.SalusPatient;
 import it.ecubit.pse.mongo.entities.SensorDefaultThresholdValue;
 import it.ecubit.pse.mongo.entities.SensorMeasurementPeriod;
 import it.ecubit.pse.mongo.entities.SensorMeasurementTimeSchedule;
+import it.ecubit.pse.mongo.entities.SensorType;
 import it.ecubit.pse.mongo.utils.TypedRole.RoleType;
 
 @Controller
@@ -329,7 +332,9 @@ public class PatientController {
 		List<PSEUser> users = userService.getAllByRole(this.nurseId);
 		model.addAttribute("province", province);
 		model.addAttribute("users", users);
-		Set<DeviceSensor> devicesSensor = new LinkedHashSet<>();
+		Comparator<SensorType> sensorTypeComparator = Comparator.comparing(SensorType::getTipo);
+		Comparator<DeviceSensor> deviceSensorComparator = Comparator.comparing(DeviceSensor::getTipoSensore, sensorTypeComparator);
+		Set<DeviceSensor> devicesSensor = new TreeSet<>(deviceSensorComparator);
 		Set<DeviceType> devicesType = new LinkedHashSet<>();
 		List<SensorThresholdValueDTO> sensors = new ArrayList<>();
 		List<SensorMeasurementThresholdValueDTO> outerSensors = new ArrayList<>();
@@ -344,12 +349,29 @@ public class PatientController {
 		for (DeviceType deviceType: devicesType)  {
 			 devicesSensor.addAll(deviceSensorService.findByDeviceType(deviceType));
 		}
-
+		
+		
 		for (DeviceSensor deviceSensor:devicesSensor)  {
+		   String orarioMattina="";
+		   String orarioPomeriggio="";
+		   String orarioSera="";
+		   String orarioNotte="";
 		   sensors = sensorThresholdValueService.getThresholdForPatientAndSensorTypeSorted(patientIdentifier, deviceSensor.getTipoSensore(), defaultThresholdSort);
 		   schedules = sensorMeasurementScheduleService.getDefinedSchedulesForPatientAndSensorTypeSorted(patientIdentifier, deviceSensor.getTipoSensore(), scheduleSort);
+		   if (!schedules.isEmpty())
+			   for (SensorMeasurementTimeSchedule schedule: schedules)  {
+				   if (schedule.getEtichettaPeriodo().equals("Mattina"))
+					   orarioMattina = schedule.getOrarioMisurazione();
+		           if (schedule.getEtichettaPeriodo().equals("Pomeriggio"))
+			           orarioPomeriggio = schedule.getOrarioMisurazione();
+		           if (schedule.getEtichettaPeriodo().equals("Sera"))
+			           orarioSera = schedule.getOrarioMisurazione();
+		           if (schedule.getEtichettaPeriodo().equals("Notte"))
+			           orarioNotte = schedule.getOrarioMisurazione();
+			   }
 		   if (sensors != null && sensors.size() > 0)   {
-		   SensorMeasurementThresholdValueDTO sensorMeasuerementThresholdValue = new SensorMeasurementThresholdValueDTO(sensors, schedules);
+		   SensorMeasurementThresholdValueDTO sensorMeasuerementThresholdValue = new SensorMeasurementThresholdValueDTO(sensors, schedules, deviceSensor.getTipoSensore(), orarioMattina, orarioPomeriggio, orarioSera, orarioNotte);
+		   
 		   outerSensors.add(sensorMeasuerementThresholdValue);  
 		   }
 		}
@@ -372,12 +394,7 @@ public class PatientController {
 	@PostMapping
 	public String registerUserAccount(@ModelAttribute("patient") @Valid HomeCheckPatientUserDTO patientDTO,
 			BindingResult result, Model model) throws PSEServiceException {
-
-		/*
-		 * PSEUser existing = userService.findByEmail(patientDTO.getEmail()); if
-		 * (existing != null) { result.rejectValue("email", null,
-		 * "There is already an account registered with that email"); }
-		 */
+		 
 
 		if (result.hasErrors()) {
 			return "new-paziente";
@@ -624,6 +641,50 @@ public class PatientController {
 		 */
 
 		return  "redirect:/patients/"+patientDTO.getId()+"#PatologiePaziente";
+	}
+	
+	
+	@PostMapping(path = "/sensori")
+	public String updateUserSensors(@ModelAttribute("patient") HomeCheckPatientUserDTO patientDTO,
+			BindingResult result, Model model) throws PSEServiceException {
+		
+		if (result.hasErrors()) {
+			return "scheda-paziente";
+		}
+		try {
+			List<SensorMeasurementTimeSchedule> schedules = new ArrayList<>();
+			for (SensorMeasurementThresholdValueDTO sensorMeasurement: patientDTO.getSensorMeasurements() )  {
+			    sensorThresholdValueService.setCustomThresholdValuesForPatientAndSensorType(patientDTO.getId(), sensorMeasurement.getSensorType(), sensorMeasurement.getSensorThresholdValue());
+			    if (!sensorMeasurement.getOrarioMattina().equals("")) {
+			    	SensorMeasurementTimeSchedule scheduleMattina = new SensorMeasurementTimeSchedule(null, patientDTO.getId(), sensorMeasurement.getSensorType(), "Mattina", sensorMeasurement.getOrarioMattina());
+			    	schedules.add(scheduleMattina);
+			    }
+			    if (!sensorMeasurement.getOrarioPomeriggio().equals(""))  {
+				    SensorMeasurementTimeSchedule schedulePomeriggio = new SensorMeasurementTimeSchedule(null, patientDTO.getId(), sensorMeasurement.getSensorType(), "Pomeriggio", sensorMeasurement.getOrarioPomeriggio());
+				    schedules.add(schedulePomeriggio);
+			    }
+				if (!sensorMeasurement.getOrarioPomeriggio().equals(""))  {
+					SensorMeasurementTimeSchedule scheduleSera = new SensorMeasurementTimeSchedule(null, patientDTO.getId(), sensorMeasurement.getSensorType(), "Sera", sensorMeasurement.getOrarioSera());
+					schedules.add(scheduleSera);
+				}
+				if (!sensorMeasurement.getOrarioPomeriggio().equals(""))  {
+					SensorMeasurementTimeSchedule scheduleNotte = new SensorMeasurementTimeSchedule(null, patientDTO.getId(), sensorMeasurement.getSensorType(), "Notte", sensorMeasurement.getOrarioNotte());
+					schedules.add(scheduleNotte);
+				}
+			    sensorMeasurementScheduleService.setSchedulesForPatientAndSensorType(patientDTO.getId(), sensorMeasurement.getSensorType(), schedules);
+		  }
+			
+		} catch (Exception e) {
+            System.out.println("Exception : "+e);
+		}
+		/*
+		 * AslVtPatient newPatient = patientDTO.getPatient();
+		 * 
+		 * aslVtPatientService.save(newPatient); return
+		 * "redirect:/registration?success";
+		 */
+
+		return  "redirect:/patients/"+patientDTO.getId()+"#ConfigurazioneSensori";
 	}
 	
 	

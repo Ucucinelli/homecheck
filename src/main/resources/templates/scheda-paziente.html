@@ -58,12 +58,12 @@
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item"><a href="../dashboard.html">Dashboard</a></li>
-							<li class="breadcrumb-item active" aria-current="page">Scheda
-								Paziente Mario Rossi</li>
+							<li th:text="${'Scheda Paziente '+ patient.getName() + ' '+ patient.getSurname()}" class="breadcrumb-item active" aria-current="page">Scheda
+								Paziente</li>
 						</ol>
 					</nav>
 					<!-- Page Heading -->
-					<h1 class="mb-2 text-gray-800">Scheda Paziente Mario Rossi</h1>
+					<h1 th:text="${'Scheda Paziente '+ patient.getName() + ' '+ patient.getSurname()}" class="mb-2 text-gray-800">Scheda Paziente</h1>
 					<p class="mb-4">Lorem Ipsum is simply dummy text of the
 						printing and typesetting industry. Lorem Ipsum has been the
 						industry's standard dummy text ever since the 1500s, when an
@@ -132,15 +132,15 @@
 																<label for="inputName">Nome</label>
 																<div class="input-group input-group-joined">
 																	<input th:field="*{id}" class="form-control"
-																		type="hidden" required> <input
+																		type="hidden" > <input
 																		th:field="*{email}" class="form-control" type="hidden"
-																		required> <input th:field="*{password}"
-																		class="form-control" type="hidden" required> <input
+																		> <input th:field="*{password}"
+																		class="form-control" type="hidden" > <input
 																		th:name="confirmPassword" th:value="*{password}"
-																		class="form-control" type="hidden" required> <input
+																		class="form-control" type="hidden" > <input
 																		th:field="*{name}" class="form-control" type="text"
 																		id="inputName" placeholder="Mario" aria-label="Nome"
-																		readonly required>
+																		readonly >
 																	<div class="input-group-append">
 																		<span class="input-group-text"> <i
 																			class="fas fa-user-tie"></i>
@@ -156,7 +156,7 @@
 																<div class="input-group input-group-joined">
 																	<input th:field="*{surname}" class="form-control"
 																		type="text" id="inputSurname" placeholder="rossi"
-																		aria-label="Cognome" readonly required>
+																		aria-label="Cognome" readonly >
 																	<div class="input-group-append">
 																		<span class="input-group-text"> <i
 																			class="fas fa-user-tie"></i>
@@ -174,7 +174,7 @@
 																		<input input th:field="*{sex}"
 																			class="custom-control-input radioDisabled"
 																			id="customRadio1" type="radio" name="customRadio"
-																			value="MALE" required> <label
+																			value="MALE" > <label
 																			class="custom-control-label" for="customRadio1">M</label>
 																	</div>
 																</div>
@@ -183,7 +183,7 @@
 																		<input th:field="*{sex}"
 																			class="custom-control-input radioDisabled"
 																			id="customRadio2" type="radio" name="customRadio"
-																			value="FEMALE" required> <label
+																			value="FEMALE" > <label
 																			class="custom-control-label" for="customRadio2">F</label>
 																	</div>
 																</div>
@@ -199,7 +199,7 @@
 																	<input th:field="*{birthDateString}"
 																		class="form-control" type="text" id="inputDOB"
 																		placeholder="12/02/1996" aria-label="DOB" readonly
-																		required>
+																		>
 																	<div class="input-group-append">
 																		<span class="input-group-text"> <i
 																			class="far fa-calendar-alt"></i>
@@ -516,7 +516,7 @@
 															<div class="col-10">
 																<div class="tab-content" id="nav-tabContent">
 																	<input th:field="*{id}" class="form-control"
-																		type="hidden" required>
+																		type="hidden" >
 																	<!-- Patologia 1-->
 																	<div class="tab-pane fade show active"
 																		id="list-patologia" role="tabpanel"
@@ -1079,7 +1079,7 @@
 									<form th:action="@{/patients/dispositivi}"
 										th:object="${patient}" method="post">
 										<input th:field="*{id}" class="form-control" type="hidden"
-											required>
+											>
 										<div class="row">
 											<div class="col-xl-12">
 												<!-- Lista Dispositivi Associati table-->
@@ -1223,8 +1223,13 @@
 								<!-- Begin Configurazione Soglie Misurazioni panel -->
 								<div class="tab-pane" id="ConfigurazioneSensori"
 									role="ConfigurazioneSensori">
-									<form>
-										<div th:each="outerSensor: ${outerSensors}">
+									<form th:action="@{/patients/sensori}"
+										th:object="${patient}" method="post">
+										<input th:field="*{id}" class="form-control" type="hidden"
+											>
+										<div th:each="outerSensor, outer: ${outerSensors}">
+										<input type="hidden" th:value="${outerSensor.sensorType.getId()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorType.id'">
+										<input type="hidden" th:value="${outerSensor.sensorType.getTipo()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorType.tipo'">
 											<!-- Temperatura corporea -->
 											<!-- title -->
 											<div class="float-left">
@@ -1239,6 +1244,9 @@
 														width="30px"
 														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
 													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'pressione-arteriosa'}" class="mr-2" src="../img/ico-pressione-sanguigna.svg"
+														width="30px"
+														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
+													<img th:if="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo() == 'glucosio'}" class="mr-2" src="../img/ico-glucosio.svg"
 														width="30px"
 														th:text="${outerSensor.getSensorThresholdValue()[0].getSensorType().getTipo()}">
 												</h6>
@@ -1279,39 +1287,43 @@
 															<div class="form-inline">
 																<div class="form-row pr-5">
 																	<label for="TimeMorning" class="p-2">Mattina</label> <select
-																		id="TimeMorning" class="form-control custom-select">
+																		id="TimeMorning" class="form-control custom-select" th:value="${outerSensor.getOrarioMattina()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].orarioMattina'">
 																		<option selected th:value="''">Seleziona</option>
 																		<option
 																			th:each="orario: ${measurementsPeriod[0].getOrariMisurazionePossibili()}"
-																			th:value="${orario}" th:text="${orario}" />
+																			th:value="${orario}" th:text="${orario}"
+																			th:selected="${orario == outerSensor.getOrarioMattina()}" />
 																	</select>
 																</div>
 																<div class="form-row pr-5">
 																	<label for="TimeAfternoon" class="p-2">Pomeriggio</label>
 																	<select id="TimeAfternoon"
-																		class="form-control custom-select">
+																		class="form-control custom-select" th:value="${outerSensor.getOrarioPomeriggio()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].orarioPomeriggio'">
 																		<option selected th:value="''">Seleziona</option>
 																		<option
 																			th:each="orario: ${measurementsPeriod[1].getOrariMisurazionePossibili()}"
-																			th:value="${orario}" th:text="${orario}" />
+																			th:value="${orario}" th:text="${orario}" 
+																			th:selected="${orario == outerSensor.getOrarioPomeriggio()}"/>
 																	</select>
 																</div>
 																<div class="form-row pr-5">
 																	<label for="TimeEvening" class="p-2">Sera</label> <select
-																		id="TimeEvening" class="form-control custom-select">
+																		id="TimeEvening" class="form-control custom-select" th:value="${outerSensor.getOrarioSera()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].orarioSera'">
 																		<option selected th:value="''">Seleziona</option>
 																		<option
 																			th:each="orario: ${measurementsPeriod[2].getOrariMisurazionePossibili()}"
-																			th:value="${orario}" th:text="${orario}" />
+																			th:value="${orario}" th:text="${orario}" 
+																			th:selected="${orario == outerSensor.getOrarioSera()}"/>
 																	</select>
 																</div>
 																<div class="form-row pr-5">
 																	<label for="TimeNight" class="p-2">Notte</label> <select
-																		id="TimeNight" class="form-control custom-select">
+																		id="TimeNight" class="form-control custom-select" th:value="${outerSensor.getOrarioNotte()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].orarioNotte'">
 																		<option selected th:value="''">Seleziona</option>
 																		<option
 																			th:each="orario: ${measurementsPeriod[3].getOrariMisurazionePossibili()}"
-																			th:value="${orario}" th:text="${orario}" />
+																			th:value="${orario}" th:text="${orario}" 
+																			th:selected="${orario == outerSensor.getOrarioNotte()}"/>
 																	</select>
 																</div>
 															</div>
@@ -1321,13 +1333,16 @@
 											</div>
 											<div class="row">
 												<div
-													th:each="sensorThresholdValue: ${outerSensor.getSensorThresholdValue()}"
+													th:each="sensorThresholdValue, inner: ${outerSensor.getSensorThresholdValue()}"
 													class="col-lg-2 mb-4">
 													<div class="card shadow lift lift-sm h-100">
 														<div class="card-header">
-															<input class="form-control" type="text"
-																placeholder="Inserisci label"
-																th:value="${sensorThresholdValue.getIntervalLabel()}"
+														    <input type="hidden" th:value="${sensorThresholdValue.getId()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].id'">
+														    <input type="hidden" th:value="${sensorThresholdValue.getIdSogliaStatica()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].idSogliaStatica'">
+														    <input type="hidden" th:value="${sensorThresholdValue.isCustomValue()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].customValue'">
+															<input class="form-control" type="text" 
+																placeholder="Inserisci label"                                  
+																th:value="${sensorThresholdValue.getIntervalLabel()}" th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].intervalLabel'"
 																aria-label="Ipotermia">
 														</div>
 														<div class="card-body">
@@ -1338,7 +1353,8 @@
 																<div class="col-sm-5">
 																	<input type="number" class="form-control"
 																		placeholder="--"
-																		th:value="${sensorThresholdValue.getMinThresholdValue()}">
+																		th:value="${sensorThresholdValue.getMinThresholdValue()}"
+																		th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].minThresholdValue'">
 																</div>
 															</div>
 															<div class="form-group row">
@@ -1348,7 +1364,8 @@
 																<div class="col-sm-5">
 																	<input type="number" class="form-control"
 																		placeholder="--"
-																		th:value="${sensorThresholdValue.getMaxThresholdValue()}">
+																		th:value="${sensorThresholdValue.getMaxThresholdValue()}"
+																		th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].maxThresholdValue'">
 																</div>
 															</div>
 														</div>
@@ -1362,7 +1379,9 @@
 															<div class="custom-control custom-switch float-right">
 																<input class="custom-control-input"
 																	th:id="${sensorThresholdValue.getId()}" type="checkbox"
-																	th:checked="${sensorThresholdValue.isSendAlert()}">
+																	th:checked="${sensorThresholdValue.isSendAlert()}"
+																	th:value="${sensorThresholdValue.isSendAlert()}"
+																	th:attr="name='sensorMeasurements[' + ${outer.index} + '].sensorThresholdValue[' + ${inner.index} + '].sendAlert'">
 																<label class="custom-control-label small text-muted"
 																	th:for="${sensorThresholdValue.getId()}"
 																	data-toggle="tooltip" data-placement="right"
