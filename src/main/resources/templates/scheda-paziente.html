@@ -25,7 +25,7 @@
 	type="text/css">
 <link th:href="@{/css/ecubit-admin.min.css}" rel="stylesheet"
 	type="text/css">
-<link th:href="@{/css/mio.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/css/custom.css}" rel="stylesheet" type="text/css">
 
 <!-- Custom styles for this page -->
 <link
@@ -1395,7 +1395,7 @@
 										<div class="row mt-lg-5">
 											<div class="col-xl-12">
 												<div class="text-center">
-													<button type="submit"
+													<button type="submit" th:if="${not #lists.isEmpty(outerSensors)}"
 														class="btn btn-primary btn-user text-uppercase">Aggiorna
 														valori</button>
 												</div>
@@ -1557,7 +1557,7 @@
 
 	<!-- Page level custom scripts -->
 	<script type="text/javascript" th:src="@{/js/demo/datatables-demo.js}"></script>
-	<script type="text/javascript" th:src="@{/js/mio.js}"></script>
+	<script type="text/javascript" th:src="@{/js/custom.js}"></script>
 
 </body>
 </html>

@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 		http.authorizeRequests()
-				.antMatchers("/registration**", "/js/**", "/css/**", "/img/**", "/recupera-credenziali**",
+				.antMatchers("/js/**", "/css/**", "/img/**", "/recupera-credenziali**",
 						"/webjars/**")
 				.permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().and()
 				.logout().invalidateHttpSession(true).clearAuthentication(true)
